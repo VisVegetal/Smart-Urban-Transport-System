@@ -2,14 +2,18 @@
 #define DISPECERAT_HPP
 
 #include <vector>
+#include <string>
+
 #include "Vehicul.hpp"
 #include "Ruta.hpp"
 #include "Incident.hpp"
+#include "Exceptii.hpp"
 
 class Dispecerat {
 private:
     std::vector<Vehicul*> vehicule;
-
+    std::vector<Ruta> rute;
+    std::vector<Incident> incidente;
     void elibereazaMemorie();
 
 public:
@@ -22,7 +26,16 @@ public:
 
     void adaugaVehicul(const Vehicul& v);
     void afiseazaVehicule() const;
+    bool existaVehicul(int id) const;
+    void stergeVehicul(int id);
 
+    void adaugaRuta(const Ruta& ruta);
+    void afiseazaRute() const;
+    const Ruta* gasesteRuta(const std::string& numa) const;
+
+    void adaugaIncident(const Incident& incident);
+    void afiseazaIncident() const;
+    void calculeazaImpactTotal() const;
     double calculeazaTimpTotal(const Ruta& ruta) const;
 };
 
