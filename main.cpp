@@ -6,7 +6,7 @@
 #include "Autobuz.hpp"
 #include "Tramvai.hpp"
 #include "Metrou.hpp"
-#include "Exceptii.h"
+#include "Exceptii.hpp"
 
 void afiseazaMeniu() {
     std::cout << "\n===== SMART URBAN TRANSPORT SYSTEM =====\n";
@@ -48,7 +48,7 @@ int main() {
 
             switch (optiune) {
 
-            case 1: { // Adauga vehicul
+            case 1: {
                 int tip, id, capacitate;
 
                 std::cout << "Tip vehicul (1-Autobuz, 2-Tramvai, 3-Metrou): ";
@@ -77,7 +77,7 @@ int main() {
                 break;
             }
 
-            case 2: { // Sterge vehicul
+            case 2: {
                 int id;
                 std::cout << "ID vehicul de sters: ";
                 std::cin >> id;
@@ -87,12 +87,12 @@ int main() {
                 break;
             }
 
-            case 3: { // Afiseaza vehicule
+            case 3: {
                 dispecerat.afiseazaVehicule();
                 break;
             }
 
-            case 4: { // Adauga ruta
+            case 4: {
                 std::string nume;
                 double distanta;
 
@@ -110,12 +110,12 @@ int main() {
                 break;
             }
 
-            case 5: { // Afiseaza rute
+            case 5: {
                 dispecerat.afiseazaRute();
                 break;
             }
 
-            case 6: { // Adauga incident
+            case 6: {
                 int tip, impact;
                 std::string descriere;
 
@@ -127,7 +127,6 @@ int main() {
 
                 curataInput();
                 std::cout << "Descriere: ";
-                //std::getline(std::cin, descriere);
                 std::getline(std::cin, descriere);
 
                 TipIncident ti;
@@ -147,12 +146,12 @@ int main() {
                 break;
             }
 
-            case 7: { // Afiseaza incidente
+            case 7: {
                 dispecerat.afiseazaIncidente();
                 break;
             }
 
-            case 8: { // Calculeaza timp total
+            case 8: {
                 std::string numeRuta;
 
                 curataInput();
@@ -169,7 +168,7 @@ int main() {
                 break;
             }
         }
-        catch (const TransportException& e) {
+        catch (const ::TransportException& e) {
             std::cerr << "Eroare: " << e.what() << "\n";
         }
         catch (const std::exception& e) {

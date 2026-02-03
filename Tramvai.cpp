@@ -1,21 +1,16 @@
 #include "Tramvai.hpp"
 
-Tramvai::Tramvai(int id, int capacitate) {
-    :Vehicul(id, capacitate);
-}
+Tramvai::Tramvai(int id, int capacitate)
+    : Vehicul(id, capacitate) {}
 
 double Tramvai::calculeazaTimp(const Ruta& ruta) const {
-    return ruta.getDistanta() / VITEZA_MEDIE;
+    return ruta.getDistanta() / 40.0;
 }
 
-Vehicul *Tramvai::clone() const {
+Vehicul* Tramvai::clone() const {
     return new Tramvai(*this);
 }
 
-std::string Tramvai::getTipos() const {
+std::string Tramvai::getTip() const {
     return "Tramvai";
 }
-
-
-
-

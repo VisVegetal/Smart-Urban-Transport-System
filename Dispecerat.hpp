@@ -12,8 +12,11 @@
 class Dispecerat {
 private:
     std::vector<Vehicul*> vehicule;
+
     std::vector<Ruta> rute;
+
     std::vector<Incident> incidente;
+
     void elibereazaMemorie();
 
 public:
@@ -25,18 +28,19 @@ public:
     Dispecerat& operator=(Dispecerat other);
 
     void adaugaVehicul(const Vehicul& v);
-    void afiseazaVehicule() const;
     bool existaVehicul(int id) const;
     void stergeVehicul(int id);
+    void afiseazaVehicule() const;
 
     void adaugaRuta(const Ruta& ruta);
     void afiseazaRute() const;
-    const Ruta* gasesteRuta(const std::string& numa) const;
+    const Ruta* gasesteRuta(const std::string& nume) const;
 
     void adaugaIncident(const Incident& incident);
-    void afiseazaIncident() const;
-    void calculeazaImpactTotal() const;
-    double calculeazaTimpTotal(const Ruta& ruta) const;
+    void afiseazaIncidente() const;
+    int calculeazaImpactTotal() const;
+
+    double calculeazaTimpTotal(const std::string& numeRuta) const;
 };
 
 #endif

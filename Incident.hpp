@@ -2,7 +2,7 @@
 #define INCIDENT_HPP
 
 #include <string>
-#include "Exceptii.h"
+#include "Exceptii.hpp"
 
 enum class TipIncident {
     TRAFIC_INTENS,
@@ -23,23 +23,13 @@ public:
              int impactMinute)
         : tip(tip), descriere(descriere), impactMinute(impactMinute) {
         if (impactMinute < 0) {
-            throw ValoareInvalidaException(
-                "Impactul unui incident nu poate fi negativ."
-            );
+            throw ValoareInvalidaException("Impact negativ.");
         }
     }
 
-    TipIncident getTip() const {
-        return tip;
-    }
-
-    const std::string& getDescriere() const {
-        return descriere;
-    }
-
-    int getImpactMinute() const {
-        return impactMinute;
-    }
+    TipIncident getTip() const { return tip; }
+    const std::string& getDescriere() const { return descriere; }
+    int getImpactMinute() const { return impactMinute; }
 };
 
 #endif

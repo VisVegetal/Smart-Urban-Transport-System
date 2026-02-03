@@ -8,19 +8,17 @@ class Ruta {
 private:
     std::string nume;
     double distanta;
+
 public:
     Ruta(const std::string& nume, double distanta)
-    : nume(nume(nume), distanta(distanta)) {
-        if (distanta <= 0)
-            throw ValoareInvalidaException("Distanta rutei trebuie sa fie pozitiva!");
+        : nume(nume), distanta(distanta) {
+        if (distanta <= 0) {
+            throw ValoareInvalidaException("Distanta invalida.");
+        }
     }
 
-    const std::string& getNume() const {
-        return nume;
-    }
-    double getDistanta() const {
-        return distanta;
-    }
+    const std::string& getNume() const { return nume; }
+    double getDistanta() const { return distanta; }
 };
 
 #endif

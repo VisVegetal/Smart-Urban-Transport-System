@@ -3,13 +3,11 @@
 
 #include <string>
 #include "Ruta.hpp"
-#include "Exceptii.hpp"
 
 class Vehicul {
 protected:
     int id;
     int capacitate;
-
     static int numarVehicule;
 
 public:

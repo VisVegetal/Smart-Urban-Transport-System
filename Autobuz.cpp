@@ -4,8 +4,7 @@ Autobuz::Autobuz(int id, int capacitate)
     : Vehicul(id, capacitate) {}
 
 double Autobuz::calculeazaTimp(const Ruta& ruta) const {
-    // timp = distanta / viteza (ore)
-    return ruta.getDistanta() / VITEZA_MEDIE;
+    return ruta.getDistanta() / 30.0;
 }
 
 Vehicul* Autobuz::clone() const {

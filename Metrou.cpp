@@ -3,8 +3,8 @@
 Metrou::Metrou(int id, int capacitate)
     : Vehicul(id, capacitate) {}
 
-double Metrou::calculeazaTimp(const Ruta &ruta) const {
-    return ruta.getDistanta() / VITEZA_MEDIE;
+double Metrou::calculeazaTimp(const Ruta& ruta) const {
+    return ruta.getDistanta() / 60.0;
 }
 
 Vehicul* Metrou::clone() const {
@@ -14,6 +14,3 @@ Vehicul* Metrou::clone() const {
 std::string Metrou::getTip() const {
     return "Metrou";
 }
-
-
-

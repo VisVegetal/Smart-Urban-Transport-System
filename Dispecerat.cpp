@@ -1,8 +1,6 @@
 #include "Dispecerat.hpp"
 #include "Metrou.hpp"
 #include <iostream>
-#include <algorithm>
-
 
 
 void Dispecerat::elibereazaMemorie() {
@@ -11,6 +9,7 @@ void Dispecerat::elibereazaMemorie() {
     }
     vehicule.clear();
 }
+
 
 Dispecerat::Dispecerat() = default;
 
@@ -74,7 +73,6 @@ void Dispecerat::afiseazaVehicule() const {
                   << "\n";
     }
 }
-
 
 
 void Dispecerat::adaugaRuta(const Ruta& ruta) {
