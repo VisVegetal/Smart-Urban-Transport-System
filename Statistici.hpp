@@ -6,6 +6,10 @@
 
 class Statistici {
 public:
+    static void distributieVehicule(const Dispecerat& d);
+    static double impactMediuIncident(const Dispecerat& d);
+    static void raportDetaliat(const Dispecerat& d);
+
     static const Vehicul* vehiculCelMaiRapid(
         const Dispecerat& d,
         const std::string& numeRuta

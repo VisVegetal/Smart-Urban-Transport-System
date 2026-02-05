@@ -2,12 +2,14 @@
 
 #include <fstream>
 #include <sstream>
-#include <iostream>
 
 #include "Autobuz.hpp"
 #include "Tramvai.hpp"
 #include "Metrou.hpp"
 #include "Exceptii.hpp"
+#include "Ruta.hpp"
+#include "Incident.hpp"
+#include "Dispecerat.hpp"
 
 // ================= SALVARE =================
 
@@ -28,6 +30,7 @@ void Persistenta::salveaza(
 
     // -------- VEHICULE --------
     fout << "[VEHICULE]\n";
+
     for (const auto v : d.getVehicule()) {
         fout << v->getTip() << ";"
              << v->getId() << ";"
@@ -118,6 +121,26 @@ void Persistenta::incarca(
                     impact
                 )
             );
+
+
         }
     }
 }
+
+
+bool Persistenta::fisierValid(const std::string& numeFisier) {
+    std::ifstream fin(numeFisier);
+    return fin.good();
+}
+
+void Persistenta::salveazaRaport(
+    const Dispecerat& d,
+    const std::string& fisier
+) {
+    std::ofstream fout(fisier);
+
+    fout << "Vehicule: " << d.numarVehicule() << "\n";
+    fout << "Incidente: " << d.numarIncidente() << "\n";
+    fout << "Impact total: " << d.calculeazaImpactTotal() << "\n";
+}
+

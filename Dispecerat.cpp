@@ -173,3 +173,50 @@ const std::vector<Incident>& Dispecerat::getIncidente() const {
     return incidente;
 }
 
+bool Dispecerat::existaRuta(const std::string& nume) const {
+    for (const auto& r : rute) {
+        if (r.getNume() == nume) return true;
+    }
+    return false;
+}
+
+int Dispecerat::numarVehicule() const {
+    return static_cast<int>(vehicule.size());
+}
+
+int Dispecerat::numarIncidente() const {
+    return static_cast<int>(incidente.size());
+}
+
+void Dispecerat::stergeRuta(const std::string& nume) {
+    for (auto it = rute.begin(); it != rute.end(); ++it) {
+        if (it->getNume() == nume) {
+            rute.erase(it);
+            Logger::log(LogLevel::INFO, "Ruta stearsa: " + nume);
+            return;
+        }
+    }
+
+    throw RutaException("Ruta inexistenta.");
+}
+
+double Dispecerat::simuleazaCursa(
+    int idVehicul,
+    const std::string& numeRuta
+) const {
+    const Ruta* ruta = gasesteRuta(numeRuta);
+    if (!ruta) {
+        throw RutaException("Ruta inexistenta.");
+    }
+
+    for (const auto v : vehicule) {
+        if (v->getId() == idVehicul) {
+            double timp = v->calculeazaTimp(*ruta);
+            timp += calculeazaImpactTotal() / 60.0;
+            return timp;
+        }
+    }
+
+    throw VehiculException("Vehicul inexistent.");
+}
+

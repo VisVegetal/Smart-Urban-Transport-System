@@ -9,6 +9,7 @@
 #include "Exceptii.hpp"
 #include "Logger.hpp"
 #include "Persistenta.hpp"
+#include "Statistici.hpp"
 
 void afiseazaMeniu() {
     std::cout << "\n=========== SMART URBAN TRANSPORT SYSTEM ===========\n";
@@ -22,13 +23,15 @@ void afiseazaMeniu() {
     std::cout << "8.  Calculeaza timp total pe ruta\n";
     std::cout << "9.  Afiseaza loguri\n";
     std::cout << "10. Salveaza loguri in fisier\n";
-    std::cout << "11. Salveaza sistemul in fisier\n";
-    std::cout << "12. Incarca sistemul din fisier\n";
+    std::cout << "11. Simuleaza cursa vehicul pe ruta\n";
+    std::cout << "12. Salveaza sistemul in fisier\n";
+    std::cout << "13. Incarca sistemul din fisier\n";
+    std::cout << "14. Raport detaliat statistici\n";
+    std::cout << "15. Distributie vehicule pe tip\n";
     std::cout << "0.  Iesire\n";
     std::cout << "===================================================\n";
     std::cout << "Optiune: ";
 }
-
 
 void curataInput() {
     std::cin.clear();
@@ -46,7 +49,7 @@ int main() {
 
             if (std::cin.fail()) {
                 curataInput();
-                throw::TransportException("Input invalid.");
+                throw TransportException("Input invalid.");
             }
 
             if (optiune == 0) {
@@ -56,9 +59,10 @@ int main() {
 
             switch (optiune) {
 
+            // ================= VEHICULE =================
+
             case 1: {
                 int tip, id, capacitate;
-
                 std::cout << "Tip vehicul (1-Autobuz, 2-Tramvai, 3-Metrou): ";
                 std::cin >> tip;
 
@@ -69,19 +73,16 @@ int main() {
                 std::cin >> capacitate;
 
                 if (tip == 1) {
-                    Autobuz a(id, capacitate);
-                    dispecerat.adaugaVehicul(a);
+                    dispecerat.adaugaVehicul(Autobuz(id, capacitate));
                 } else if (tip == 2) {
-                    Tramvai t(id, capacitate);
-                    dispecerat.adaugaVehicul(t);
+                    dispecerat.adaugaVehicul(Tramvai(id, capacitate));
                 } else if (tip == 3) {
-                    Metrou m(id, capacitate);
-                    dispecerat.adaugaVehicul(m);
+                    dispecerat.adaugaVehicul(Metrou(id, capacitate));
                 } else {
-                    throw::TransportException("Tip vehicul invalid.");
+                    throw TransportException("Tip vehicul invalid.");
                 }
 
-                std::cout << "Vehicul adaugat cu succes.\n";
+                std::cout << "Vehicul adaugat.\n";
                 break;
             }
 
@@ -95,10 +96,11 @@ int main() {
                 break;
             }
 
-            case 3: {
+            case 3:
                 dispecerat.afiseazaVehicule();
                 break;
-            }
+
+            // ================= RUTE =================
 
             case 4: {
                 std::string nume;
@@ -111,17 +113,16 @@ int main() {
                 std::cout << "Distanta (km): ";
                 std::cin >> distanta;
 
-                Ruta r(nume, distanta);
-                dispecerat.adaugaRuta(r);
-
+                dispecerat.adaugaRuta(Ruta(nume, distanta));
                 std::cout << "Ruta adaugata.\n";
                 break;
             }
 
-            case 5: {
+            case 5:
                 dispecerat.afiseazaRute();
                 break;
-            }
+
+            // ================= INCIDENTE =================
 
             case 6: {
                 int tip, impact;
@@ -144,57 +145,82 @@ int main() {
                     case 3: ti = TipIncident::DEFECTIUNE; break;
                     case 4: ti = TipIncident::ACCIDENT; break;
                     default:
-                        throw::TransportException("Tip incident invalid.");
+                        throw TransportException("Tip incident invalid.");
                 }
 
-                Incident inc(ti, descriere, impact);
-                dispecerat.adaugaIncident(inc);
-
+                dispecerat.adaugaIncident(Incident(ti, descriere, impact));
                 std::cout << "Incident adaugat.\n";
                 break;
             }
 
-            case 7: {
+            case 7:
                 dispecerat.afiseazaIncidente();
                 break;
-            }
+
+            // ================= CALCULE =================
 
             case 8: {
-                std::string numeRuta;
-
+                std::string ruta;
                 curataInput();
                 std::cout << "Nume ruta: ";
-                std::getline(std::cin, numeRuta);
+                std::getline(std::cin, ruta);
 
-                double timp = dispecerat.calculeazaTimpTotal(numeRuta);
+                double timp = dispecerat.calculeazaTimpTotal(ruta);
                 std::cout << "Timp total estimat: " << timp << " ore\n";
                 break;
             }
-            case 9: {
+
+            // ================= LOGGING =================
+
+            case 9:
                 Logger::afiseazaLoguri();
                 break;
-            }
 
-            case 10: {
+            case 10:
                 Logger::salveazaInFisier("loguri.txt");
                 std::cout << "Loguri salvate.\n";
                 break;
+
+            // ================= SIMULARE =================
+
+            case 11: {
+                int id;
+                std::string ruta;
+
+                std::cout << "ID vehicul: ";
+                std::cin >> id;
+
+                curataInput();
+                std::cout << "Nume ruta: ";
+                std::getline(std::cin, ruta);
+
+                double timp = dispecerat.simuleazaCursa(id, ruta);
+                std::cout << "Timp simulare: " << timp << " ore\n";
+                break;
             }
 
-            case 12: {
+            // ================= PERSISTENTA =================
+
+            case 12:
                 Persistenta::salveaza(dispecerat, "sistem.txt");
                 std::cout << "Sistem salvat.\n";
                 break;
-            }
 
-            case 13: {
-                dispecerat = Dispecerat(); // reset
+            case 13:
+                dispecerat = Dispecerat();
                 Persistenta::incarca(dispecerat, "sistem.txt");
                 std::cout << "Sistem incarcat.\n";
                 break;
-            }
 
+            // ================= STATISTICI =================
 
+            case 14:
+                Statistici::raportDetaliat(dispecerat);
+                break;
+
+            case 15:
+                Statistici::distributieVehicule(dispecerat);
+                break;
 
             default:
                 std::cout << "Optiune invalida.\n";

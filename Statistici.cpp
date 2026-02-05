@@ -1,4 +1,9 @@
 #include "Statistici.hpp"
+#include "Tramvai.hpp"
+#include "Metrou.hpp"
+#include "Autobuz.hpp"
+#include "Dispecerat.hpp"
+
 
 #include <iostream>
 #include <limits>
@@ -81,4 +86,37 @@ void Statistici::raportGeneral(
               << d.getVehicule().size() << "\n";
 
     std::cout << "Raport generat cu succes.\n";
+}
+
+void Statistici::distributieVehicule(const Dispecerat& d) {
+    int autobuze = 0, tramvaie = 0, metrouri = 0;
+
+    for (const auto v : d.getVehicule()) {
+        if (dynamic_cast<const Autobuz*>(v)) autobuze++;
+        else if (dynamic_cast<const Tramvai*>(v)) tramvaie++;
+        else if (dynamic_cast<const Metrou*>(v)) metrouri++;
+    }
+
+    std::cout << "Autobuze: " << autobuze << "\n";
+    std::cout << "Tramvaie: " << tramvaie << "\n";
+    std::cout << "Metrouri: " << metrouri << "\n";
+}
+
+double Statistici::impactMediuIncident(const Dispecerat& d) {
+    if (d.getIncidente().empty()) return 0.0;
+
+    int total = 0;
+    for (const auto& i : d.getIncidente()) {
+        total += i.getImpactMinute();
+    }
+
+    return static_cast<double>(total) / d.getIncidente().size();
+}
+
+void Statistici::raportDetaliat(const Dispecerat& d) {
+    std::cout << "\n===== RAPORT DETALIAT SISTEM =====\n";
+    std::cout << "Vehicule totale: " << d.numarVehicule() << "\n";
+    std::cout << "Incidente active: " << d.numarIncidente() << "\n";
+    std::cout << "Impact mediu incident: "
+              << impactMediuIncident(d) << " minute\n";
 }
