@@ -20,9 +20,9 @@ void afiseazaMeniu() {
     std::cout << "6.  Adauga incident\n";
     std::cout << "7.  Afiseaza incidente\n";
     std::cout << "8.  Calculeaza timp total pe ruta\n";
-    std::cout << "9.  Vehicul cel mai rapid pe ruta\n";
-    std::cout << "10. Vehicul cu capacitate maxima\n";
-    std::cout << "11. Timp mediu pe ruta\n";
+    std::cout << "9.  Afiseaza loguri\n";
+    std::cout << "10. Salveaza loguri in fisier\n";
+    std::cout << "11. Salveaza sistemul in fisier\n";
     std::cout << "12. Incarca sistemul din fisier\n";
     std::cout << "0.  Iesire\n";
     std::cout << "===================================================\n";
@@ -46,7 +46,7 @@ int main() {
 
             if (std::cin.fail()) {
                 curataInput();
-                throw TransportException("Input invalid.");
+                throw::TransportException("Input invalid.");
             }
 
             if (optiune == 0) {
@@ -78,7 +78,7 @@ int main() {
                     Metrou m(id, capacitate);
                     dispecerat.adaugaVehicul(m);
                 } else {
-                    throw TransportException("Tip vehicul invalid.");
+                    throw::TransportException("Tip vehicul invalid.");
                 }
 
                 std::cout << "Vehicul adaugat cu succes.\n";
@@ -144,7 +144,7 @@ int main() {
                     case 3: ti = TipIncident::DEFECTIUNE; break;
                     case 4: ti = TipIncident::ACCIDENT; break;
                     default:
-                        throw TransportException("Tip incident invalid.");
+                        throw::TransportException("Tip incident invalid.");
                 }
 
                 Incident inc(ti, descriere, impact);
@@ -170,14 +170,16 @@ int main() {
                 std::cout << "Timp total estimat: " << timp << " ore\n";
                 break;
             }
-            case 9:
+            case 9: {
                 Logger::afiseazaLoguri();
                 break;
+            }
 
-            case 10:
+            case 10: {
                 Logger::salveazaInFisier("loguri.txt");
                 std::cout << "Loguri salvate.\n";
                 break;
+            }
 
             case 12: {
                 Persistenta::salveaza(dispecerat, "sistem.txt");

@@ -46,7 +46,6 @@ const Vehicul* Statistici::vehiculCapacitateMaxima(
     return vehiculMax;
 }
 
-// ================= TIMP MEDIU PE RUTA =================
 
 double Statistici::timpMediuPeRuta(
     const Dispecerat& d,

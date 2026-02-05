@@ -7,7 +7,6 @@
 #include "Vehicul.hpp"
 #include "Ruta.hpp"
 #include "Incident.hpp"
-#include "Exceptii.hpp"
 
 class Dispecerat {
 private:
@@ -21,7 +20,7 @@ private:
 
 public:
     Dispecerat();
-    ~Dispecerat();
+    ~Dispecerat() noexcept;
 
     Dispecerat(const Dispecerat& other);
 

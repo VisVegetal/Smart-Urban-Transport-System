@@ -142,13 +142,19 @@ double Dispecerat::calculeazaTimpTotal(const std::string& numeRuta) const {
 
     double timpTotal = 0.0;
 
+    bool existaMetrou = false;
+
     for (const auto v : vehicule) {
         timpTotal += v->calculeazaTimp(*ruta);
-
         if (dynamic_cast<const Metrou*>(v)) {
-            timpTotal *= 0.97;
+            existaMetrou = true;
         }
     }
+
+    if (existaMetrou) {
+        timpTotal *= 0.97;
+    }
+
 
     timpTotal += calculeazaImpactTotal() / 60.0;
 

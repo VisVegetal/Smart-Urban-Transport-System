@@ -1,2 +1,30 @@
+4
+Ruta Centrala
+12.5
+4
+Ruta Sud
+8.2
+1
+1
+101
+50
+1
+2
+102
+120
+1
+3
+103
+300
+6
+1
+15
+Trafic intens la ora de varf
+7
+3
 5
-11 22 33 44 55
+8
+Ruta Centrala
+9
+10
+0
