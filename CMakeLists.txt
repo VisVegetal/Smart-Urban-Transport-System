@@ -65,6 +65,12 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         Metrou.cpp
         Statie.cpp
         Dispecerat.cpp
+        Logger.cpp
+        Logger.hpp
+        Statistici.cpp
+        Statistici.hpp
+        Persistenta.cpp
+        Persistenta.hpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )

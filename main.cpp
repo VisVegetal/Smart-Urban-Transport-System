@@ -7,20 +7,28 @@
 #include "Tramvai.hpp"
 #include "Metrou.hpp"
 #include "Exceptii.hpp"
+#include "Logger.hpp"
+#include "Persistenta.hpp"
 
 void afiseazaMeniu() {
-    std::cout << "\n===== SMART URBAN TRANSPORT SYSTEM =====\n";
-    std::cout << "1. Adauga vehicul\n";
-    std::cout << "2. Sterge vehicul\n";
-    std::cout << "3. Afiseaza vehicule\n";
-    std::cout << "4. Adauga ruta\n";
-    std::cout << "5. Afiseaza rute\n";
-    std::cout << "6. Adauga incident\n";
-    std::cout << "7. Afiseaza incidente\n";
-    std::cout << "8. Calculeaza timp total pe ruta\n";
-    std::cout << "0. Iesire\n";
+    std::cout << "\n=========== SMART URBAN TRANSPORT SYSTEM ===========\n";
+    std::cout << "1.  Adauga vehicul\n";
+    std::cout << "2.  Sterge vehicul\n";
+    std::cout << "3.  Afiseaza vehicule\n";
+    std::cout << "4.  Adauga ruta\n";
+    std::cout << "5.  Afiseaza rute\n";
+    std::cout << "6.  Adauga incident\n";
+    std::cout << "7.  Afiseaza incidente\n";
+    std::cout << "8.  Calculeaza timp total pe ruta\n";
+    std::cout << "9.  Vehicul cel mai rapid pe ruta\n";
+    std::cout << "10. Vehicul cu capacitate maxima\n";
+    std::cout << "11. Timp mediu pe ruta\n";
+    std::cout << "12. Incarca sistemul din fisier\n";
+    std::cout << "0.  Iesire\n";
+    std::cout << "===================================================\n";
     std::cout << "Optiune: ";
 }
+
 
 void curataInput() {
     std::cin.clear();
@@ -162,6 +170,29 @@ int main() {
                 std::cout << "Timp total estimat: " << timp << " ore\n";
                 break;
             }
+            case 9:
+                Logger::afiseazaLoguri();
+                break;
+
+            case 10:
+                Logger::salveazaInFisier("loguri.txt");
+                std::cout << "Loguri salvate.\n";
+                break;
+
+            case 12: {
+                Persistenta::salveaza(dispecerat, "sistem.txt");
+                std::cout << "Sistem salvat.\n";
+                break;
+            }
+
+            case 13: {
+                dispecerat = Dispecerat(); // reset
+                Persistenta::incarca(dispecerat, "sistem.txt");
+                std::cout << "Sistem incarcat.\n";
+                break;
+            }
+
+
 
             default:
                 std::cout << "Optiune invalida.\n";

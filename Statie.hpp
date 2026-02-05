@@ -6,7 +6,7 @@
 
 class Statie {
 private:
-    std::strin nume;
+    std::string nume;
     std::vector<std::string> rute;
 
 public:

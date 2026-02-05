@@ -27,6 +27,10 @@ public:
 
     Dispecerat& operator=(Dispecerat other);
 
+    const std::vector<Vehicul*>& getVehicule() const;
+    const std::vector<Ruta>& getRute() const;
+    const std::vector<Incident>& getIncidente() const;
+
     void adaugaVehicul(const Vehicul& v);
     bool existaVehicul(int id) const;
     void stergeVehicul(int id);

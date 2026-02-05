@@ -1,5 +1,6 @@
 #include "Dispecerat.hpp"
 #include "Metrou.hpp"
+#include "Logger.hpp"
 #include <iostream>
 
 
@@ -32,13 +33,16 @@ Dispecerat& Dispecerat::operator=(Dispecerat other) {
     return *this;
 }
 
-
 void Dispecerat::adaugaVehicul(const Vehicul& v) {
     if (existaVehicul(v.getId())) {
+        Logger::log(LogLevel::ERROR, "ID vehicul duplicat");
         throw VehiculException("Exista deja un vehicul cu acest ID.");
     }
     vehicule.push_back(v.clone());
+    Logger::log(LogLevel::INFO, "Vehicul adaugat: ID " + std::to_string(v.getId()));
 }
+
+
 
 bool Dispecerat::existaVehicul(int id) const {
     for (const auto v : vehicule) {
@@ -101,10 +105,12 @@ const Ruta* Dispecerat::gasesteRuta(const std::string& nume) const {
     return nullptr;
 }
 
-
 void Dispecerat::adaugaIncident(const Incident& incident) {
     incidente.push_back(incident);
+    Logger::log(LogLevel::WARNING, "Incident adaugat: " + incident.getDescriere());
 }
+
+
 
 void Dispecerat::afiseazaIncidente() const {
     if (incidente.empty()) {
@@ -148,3 +154,16 @@ double Dispecerat::calculeazaTimpTotal(const std::string& numeRuta) const {
 
     return timpTotal;
 }
+
+const std::vector<Vehicul*>& Dispecerat::getVehicule() const {
+    return vehicule;
+}
+
+const std::vector<Ruta>& Dispecerat::getRute() const {
+    return rute;
+}
+
+const std::vector<Incident>& Dispecerat::getIncidente() const {
+    return incidente;
+}
+
