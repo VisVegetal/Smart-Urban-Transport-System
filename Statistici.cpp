@@ -84,10 +84,17 @@ double Statistici::timpMediuPeRuta(
 void Statistici::raportGeneral(const Dispecerat& d) {
     std::cout << "\n===== RAPORT GENERAL SISTEM =====\n";
 
-    std::cout << "Numar vehicule: " << d.numarVehicule() << "\n";
-    std::cout << "Numar incidente: " << d.numarIncidente() << "\n";
+    // statistici generale despre sistem
+    std::cout << "Vehicule active in sistem: "
+              << d.numarVehicule() << "\n";
 
-    // Exemplu de statii simbolice
+    std::cout << "Vehicule create total (static): "
+              << Vehicul::getNumarVehicule() << "\n";
+
+    std::cout << "Incidente active: "
+              << d.numarIncidente() << "\n";
+
+    // exemple de statii simbolice (raportare)
     Statie s1("Centru");
     Statie s2("Aeroport");
 
@@ -101,6 +108,7 @@ void Statistici::raportGeneral(const Dispecerat& d) {
 
     std::cout << "================================\n";
 }
+
 
 
 
