@@ -4,6 +4,7 @@
 #include "Tramvai.hpp"
 #include "Metrou.hpp"
 #include "Exceptii.hpp"
+#include "Statie.hpp"
 
 #include <iostream>
 #include <limits>
@@ -80,19 +81,27 @@ double Statistici::timpMediuPeRuta(
 }
 
 // raport sumar al sistemului
-void Statistici::raportGeneral(
-    const Dispecerat& d
-) {
+void Statistici::raportGeneral(const Dispecerat& d) {
     std::cout << "\n===== RAPORT GENERAL SISTEM =====\n";
-    std::cout << "Numar total vehicule: "
-              << d.getVehicule().size() << "\n";
-    std::cout << "Vehicule create total (static): "
-          << Vehicul::getNumarVehicule() << "\n";
-    std::cout << "Numar incidente: "
-              << d.getIncidente().size() << "\n";
-    std::cout << "Raport generat cu succes.\n";
 
+    std::cout << "Numar vehicule: " << d.numarVehicule() << "\n";
+    std::cout << "Numar incidente: " << d.numarIncidente() << "\n";
+
+    // Exemplu de statii simbolice
+    Statie s1("Centru");
+    Statie s2("Aeroport");
+
+    for (const auto& r : d.getRute()) {
+        s1.adaugaRuta(r.getNume());
+        s2.adaugaRuta(r.getNume());
+    }
+
+    s1.afiseaza();
+    s2.afiseaza();
+
+    std::cout << "================================\n";
 }
+
 
 
 //  distributia vehiculelor pe tipuri folosind dynamic_cast
@@ -183,6 +192,11 @@ void Statistici::raportDetaliat(const Dispecerat& d) {
                       << (m->esteAutomat() ? "DA" : "NU") << "\n";
         }
     }
+
+    std::cout << "Impact mediu per incident: "
+          << impactMediuIncident(d)
+          << " minute\n";
+
 
     std::cout << "=================================\n";
 }
