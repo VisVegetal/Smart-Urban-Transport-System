@@ -1,12 +1,1 @@
-[RUTE]
-Ruta Centrala;12.5
-Ruta Sud;8.2
 
-[VEHICULE]
-Autobuz;101;50
-Tramvai;102;120
-Metrou;103;300
-
-[INCIDENTE]
-0;15;Trafic intens la ora de varf
-3;30;Accident minor in intersectie
