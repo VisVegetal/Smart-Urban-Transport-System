@@ -3,8 +3,6 @@
 ## Descriere
 Smart Urban Transport System este o aplicație C++ de tip CLI care simulează funcționarea unui sistem de transport urban. Proiectul permite gestionarea vehiculelor, rutelor și incidentelor, precum și calcularea timpilor de deplasare și generarea de statistici relevante.
 
-Aplicația este construită folosind principii de programare orientată pe obiecte, punând accent pe moștenire, polimorfism, gestionarea memoriei și tratarea excepțiilor.
-
 ---
 
 ## Funcționalități principale
