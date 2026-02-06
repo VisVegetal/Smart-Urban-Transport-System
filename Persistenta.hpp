@@ -7,7 +7,7 @@ class Dispecerat;
 
 class Persistenta {
 public:
-    // ===================== STARE SISTEM =====================
+    //stare sistem
     static void salveaza(
         const Dispecerat& d,
         const std::string& numeFisier
@@ -18,16 +18,16 @@ public:
         const std::string& numeFisier
     );
 
-    // ===================== VALIDARI =====================
+    //validari
     static bool fisierValid(
         const std::string& numeFisier
     );
 
-    // ===================== RAPOARTE =====================
+    //rapoarte
     static void salveazaRaport(
         const Dispecerat& d,
         const std::string& numeFisier
     );
 };
 
-#endif // PERSISTENTA_HPP
+#endif 

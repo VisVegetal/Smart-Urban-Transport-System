@@ -3,16 +3,17 @@
 
 #include <exception>
 #include <string>
+#include <utility>
 
 class TransportException : public std::exception {
 protected:
-    std::string mesaj;
+    std::string mesaj; //mesaj de eroare
 
 public:
-    explicit TransportException(const std::string& msg)
-        : mesaj(msg) {}
+    explicit TransportException(std::string  msg)
+        : mesaj(std::move(msg)) {}
 
-    const char* what() const noexcept override {
+    [[nodiscard]] const char* what() const noexcept override {
         return mesaj.c_str();
     }
 };

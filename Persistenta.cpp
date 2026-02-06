@@ -3,15 +3,15 @@
 #include <fstream>
 #include <sstream>
 
+#include "Dispecerat.hpp"
 #include "Autobuz.hpp"
 #include "Tramvai.hpp"
 #include "Metrou.hpp"
-#include "Exceptii.hpp"
 #include "Ruta.hpp"
 #include "Incident.hpp"
-#include "Dispecerat.hpp"
+#include "Exceptii.hpp"
 
-// ================= SALVARE =================
+// salvare
 
 void Persistenta::salveaza(
     const Dispecerat& d,
@@ -19,25 +19,27 @@ void Persistenta::salveaza(
 ) {
     std::ofstream fout(numeFisier);
     if (!fout) {
-        throw TransportException("Nu se poate deschide fisierul pentru salvare.");
+        throw TransportException(
+            "Nu se poate deschide fisierul pentru salvare."
+        );
     }
 
-    // -------- RUTE --------
+    // rute
     fout << "[RUTE]\n";
     for (const auto& r : d.getRute()) {
-        fout << r.getNume() << ";" << r.getDistanta() << "\n";
+        fout << r.getNume() << ";"
+             << r.getDistanta() << "\n";
     }
 
-    // -------- VEHICULE --------
+    // vehicule
     fout << "[VEHICULE]\n";
-
     for (const auto v : d.getVehicule()) {
         fout << v->getTip() << ";"
              << v->getId() << ";"
              << v->getCapacitate() << "\n";
     }
 
-    // -------- INCIDENTE --------
+    // incidente
     fout << "[INCIDENTE]\n";
     for (const auto& i : d.getIncidente()) {
         fout << static_cast<int>(i.getTip()) << ";"
@@ -46,7 +48,7 @@ void Persistenta::salveaza(
     }
 }
 
-// ================= INCARCARE =================
+// incarcare
 
 void Persistenta::incarca(
     Dispecerat& d,
@@ -54,14 +56,20 @@ void Persistenta::incarca(
 ) {
     std::ifstream fin(numeFisier);
     if (!fin) {
-        throw TransportException("Nu se poate deschide fisierul pentru incarcare.");
+        throw TransportException(
+            "Nu se poate deschide fisierul pentru incarcare."
+        );
     }
 
     std::string linie;
+
+    // sectiunile fisierului
     enum Sectiune { NIMIC, RUTE, VEHICULE, INCIDENTE };
     Sectiune sect = NIMIC;
 
     while (std::getline(fin, linie)) {
+
+        // detectare sectiuni
         if (linie == "[RUTE]") {
             sect = RUTE;
             continue;
@@ -75,18 +83,24 @@ void Persistenta::incarca(
             continue;
         }
 
-        if (linie.empty()) continue;
+        if (linie.empty()) {
+            continue;
+        }
 
         std::stringstream ss(linie);
 
+        // rute
         if (sect == RUTE) {
             std::string nume;
             double dist;
+
             std::getline(ss, nume, ';');
             ss >> dist;
 
             d.adaugaRuta(Ruta(nume, dist));
         }
+
+        // vehicule
         else if (sect == VEHICULE) {
             std::string tip;
             int id, cap;
@@ -98,12 +112,16 @@ void Persistenta::incarca(
 
             if (tip == "Autobuz") {
                 d.adaugaVehicul(Autobuz(id, cap));
-            } else if (tip == "Tramvai") {
+            }
+            else if (tip == "Tramvai") {
                 d.adaugaVehicul(Tramvai(id, cap));
-            } else if (tip == "Metrou") {
+            }
+            else if (tip == "Metrou") {
                 d.adaugaVehicul(Metrou(id, cap));
             }
         }
+
+        // incidente
         else if (sect == INCIDENTE) {
             int tipInt, impact;
             std::string descriere;
@@ -121,26 +139,37 @@ void Persistenta::incarca(
                     impact
                 )
             );
-
-
         }
     }
 }
 
+// validare
 
-bool Persistenta::fisierValid(const std::string& numeFisier) {
+bool Persistenta::fisierValid(
+    const std::string& numeFisier
+) {
     std::ifstream fin(numeFisier);
     return fin.good();
 }
+
+// raport
 
 void Persistenta::salveazaRaport(
     const Dispecerat& d,
     const std::string& fisier
 ) {
     std::ofstream fout(fisier);
+    if (!fout) {
+        throw TransportException(
+            "Nu se poate crea fisierul de raport."
+        );
+    }
 
-    fout << "Vehicule: " << d.numarVehicule() << "\n";
-    fout << "Incidente: " << d.numarIncidente() << "\n";
-    fout << "Impact total: " << d.calculeazaImpactTotal() << "\n";
+    fout << "=== RAPORT SISTEM TRANSPORT ===\n";
+    fout << "Numar vehicule: "
+         << d.numarVehicule() << "\n";
+    fout << "Numar incidente: "
+         << d.numarIncidente() << "\n";
+    fout << "Impact total (minute): "
+         << d.calculeazaImpactTotal() << "\n";
 }
-

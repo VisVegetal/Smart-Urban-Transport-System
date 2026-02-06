@@ -39,6 +39,7 @@ void curataInput() {
 }
 
 int main() {
+    //obiectul care gestioneaza intregul sistem
     Dispecerat dispecerat;
     int optiune = -1;
 
@@ -59,7 +60,7 @@ int main() {
 
             switch (optiune) {
 
-            // ================= VEHICULE =================
+            // vehicule
 
             case 1: {
                 int tip, id, capacitate;
@@ -100,7 +101,7 @@ int main() {
                 dispecerat.afiseazaVehicule();
                 break;
 
-            // ================= RUTE =================
+            // rute
 
             case 4: {
                 std::string nume;
@@ -122,7 +123,7 @@ int main() {
                 dispecerat.afiseazaRute();
                 break;
 
-            // ================= INCIDENTE =================
+            //incidente
 
             case 6: {
                 int tip, impact;
@@ -157,7 +158,7 @@ int main() {
                 dispecerat.afiseazaIncidente();
                 break;
 
-            // ================= CALCULE =================
+            // calcule
 
             case 8: {
                 std::string ruta;
@@ -170,7 +171,7 @@ int main() {
                 break;
             }
 
-            // ================= LOGGING =================
+            // logging
 
             case 9:
                 Logger::afiseazaLoguri();
@@ -181,7 +182,7 @@ int main() {
                 std::cout << "Loguri salvate.\n";
                 break;
 
-            // ================= SIMULARE =================
+            // simulare
 
             case 11: {
                 int id;
@@ -199,7 +200,7 @@ int main() {
                 break;
             }
 
-            // ================= PERSISTENTA =================
+            // persistenta
 
             case 12:
                 Persistenta::salveaza(dispecerat, "sistem.txt");
@@ -212,7 +213,7 @@ int main() {
                 std::cout << "Sistem incarcat.\n";
                 break;
 
-            // ================= STATISTICI =================
+            // statistici
 
             case 14:
                 Statistici::raportDetaliat(dispecerat);

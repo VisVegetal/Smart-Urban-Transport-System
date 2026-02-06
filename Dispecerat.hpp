@@ -10,11 +10,9 @@
 
 class Dispecerat {
 private:
-    std::vector<Vehicul*> vehicule;
-
-    std::vector<Ruta> rute;
-
-    std::vector<Incident> incidente;
+    std::vector<Vehicul*> vehicule; // vehicule gestionate
+    std::vector<Ruta> rute; // rutele disponibile
+    std::vector<Incident> incidente; // incidente active
 
     void elibereazaMemorie();
 
@@ -26,37 +24,42 @@ public:
 
     Dispecerat& operator=(Dispecerat other);
 
-    const std::vector<Vehicul*>& getVehicule() const;
-    const std::vector<Ruta>& getRute() const;
-    const std::vector<Incident>& getIncidente() const;
+    [[nodiscard]] const std::vector<Vehicul*>& getVehicule() const;
+    [[nodiscard]] const std::vector<Ruta>& getRute() const;
+    [[nodiscard]] const std::vector<Incident>& getIncidente() const;
 
-    bool existaRuta(const std::string& nume) const;
+    // operatii pe rute
+    [[nodiscard]] bool existaRuta(const std::string& nume) const;
     void stergeRuta(const std::string& nume);
 
-    int numarVehicule() const;
-    int numarIncidente() const;
+    // statistici simple
+    [[nodiscard]] int numarVehicule() const;
+    [[nodiscard]] int numarIncidente() const;
 
-
+    // operatii pe vehicule
     void adaugaVehicul(const Vehicul& v);
-    bool existaVehicul(int id) const;
+    [[nodiscard]] bool existaVehicul(int id) const;
     void stergeVehicul(int id);
     void afiseazaVehicule() const;
 
+    // operatii pe rute
     void adaugaRuta(const Ruta& ruta);
     void afiseazaRute() const;
-    const Ruta* gasesteRuta(const std::string& nume) const;
+    [[nodiscard]] const Ruta* gasesteRuta(const std::string& nume) const;
 
+    // operatii pe incidente
     void adaugaIncident(const Incident& incident);
     void afiseazaIncidente() const;
-    int calculeazaImpactTotal() const;
+    [[nodiscard]] int calculeazaImpactTotal() const;
 
-    double simuleazaCursa(
-    int idVehicul,
-    const std::string& numeRuta
+    // simuleaza o cursa pentru un vehicul pe o ruta
+    [[nodiscard]] double simuleazaCursa(
+        int idVehicul,
+        const std::string& numeRuta
     ) const;
 
-
-    double calculeazaTimpTotal(const std::string& numeRuta) const;
+    // timpul total pe o ruta
+    [[nodiscard]] double calculeazaTimpTotal(const std::string& numeRuta) const;
 };
 
 #endif

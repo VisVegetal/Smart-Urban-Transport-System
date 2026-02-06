@@ -1,11 +1,41 @@
-## Smart Urban Transport System
+# Smart Urban Transport System 🚍🚋🚇
 
-Acest proiect reprezintă o aplicație de tip consolă care simulează funcționarea unui sistem de transport public urban. Scopul aplicației este de a modela principalele elemente ale unui astfel de sistem și modul în care acestea interacționează între ele.
+## Descriere
+Smart Urban Transport System este o aplicație C++ de tip CLI care simulează funcționarea unui sistem de transport urban. Proiectul permite gestionarea vehiculelor, rutelor și incidentelor, precum și calcularea timpilor de deplasare și generarea de statistici relevante.
 
-Aplicația gestionează diferite tipuri de vehicule de transport public, precum autobuze, tramvaie și metrou. Fiecare vehicul este caracterizat prin anumite proprietăți și parcurge rute prestabilite în cadrul orașului. Rutele sunt formate dintr-o succesiune de stații, iar timpul necesar parcurgerii unei rute depinde de tipul vehiculului și de condițiile existente.
+Aplicația este construită folosind principii de programare orientată pe obiecte, punând accent pe moștenire, polimorfism, gestionarea memoriei și tratarea excepțiilor.
 
-Sistemul include un dispecerat care are rolul de a coordona vehiculele și rutele disponibile. Dispeceratul centralizează informațiile despre vehiculele active și despre traseele acestora și permite actualizarea stării sistemului atunci când apar evenimente care pot influența desfășurarea transportului, cum ar fi întârzierile, traficul intens sau defecțiunile.
+---
 
-Stațiile sunt informate atunci când apar modificări relevante în circulația vehiculelor, iar timpii de deplasare sunt recalculați în funcție de noile condiții. Utilizatorul poate interacționa cu aplicația prin intermediul unui meniu afișat în consolă, având posibilitatea de a adăuga vehicule, de a defini rute și de a observa efectele diferitelor situații asupra funcționării sistemului.
+## Funcționalități principale
 
-Proiectul oferă o simulare simplă și structurată a unui sistem de transport urban, punând accent pe organizarea componentelor și pe relațiile dintre acestea.
+- Gestionarea vehiculelor (Autobuz, Tramvai, Metrou)
+- Gestionarea rutelor urbane
+- Gestionarea incidentelor (trafic, întârzieri, defectiuni, accidente)
+- Calcularea timpilor de deplasare pe rute
+- Simularea unei curse pentru un vehicul specific
+- Generarea de statistici (distribuție vehicule, rapoarte)
+- Salvarea și încărcarea stării sistemului din fișiere text
+- Sistem de logare a evenimentelor
+
+---
+
+## Structura proiectului
+
+- **Vehicul** – clasă abstractă de bază
+- **Autobuz / Tramvai / Metrou** – implementări concrete
+- **Ruta** – modelează o rută urbană
+- **Incident** – modelează evenimente neprevăzute
+- **Dispecerat** – componenta centrală de gestionare
+- **Statistici** – analiză și rapoarte
+- **Persistenta** – salvare și încărcare din fișiere
+- **Logger** – gestionarea logurilor
+- **main.cpp** – interfața CLI
+
+
+
+
+## Rulare
+
+Aplicația rulează în consolă și oferă un meniu interactiv. Utilizatorul poate selecta opțiunile dorite introducând numărul corespunzător.
+

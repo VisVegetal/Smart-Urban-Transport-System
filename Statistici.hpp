@@ -10,6 +10,7 @@ public:
     static double impactMediuIncident(const Dispecerat& d);
     static void raportDetaliat(const Dispecerat& d);
 
+    // vehiculul cel mai rapid pe o anumita ruta
     static const Vehicul* vehiculCelMaiRapid(
         const Dispecerat& d,
         const std::string& numeRuta

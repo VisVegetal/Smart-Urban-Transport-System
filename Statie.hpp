@@ -6,12 +6,13 @@
 
 class Statie {
 private:
-    std::string nume;
-    std::vector<std::string> rute;
+    std::string nume;  // numele statiei
+    std::vector<std::string> rute;   // rutele asociate statiei
 
 public:
     explicit Statie(const std::string& nume);
-    const std::string& getNume() const;
+
+    [[nodiscard]] const std::string& getNume() const;
     void adaugaRuta(const std::string& numeRuta);
     void afiseaza() const;
 };

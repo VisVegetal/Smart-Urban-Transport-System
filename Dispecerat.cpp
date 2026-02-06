@@ -3,7 +3,7 @@
 #include "Logger.hpp"
 #include <iostream>
 
-
+// elibereaza memoria pentru vehiculele alocate dinamic
 void Dispecerat::elibereazaMemorie() {
     for (auto v : vehicule) {
         delete v;
@@ -11,10 +11,9 @@ void Dispecerat::elibereazaMemorie() {
     vehicule.clear();
 }
 
-
 Dispecerat::Dispecerat() = default;
 
-Dispecerat::~Dispecerat() {
+Dispecerat::~Dispecerat() noexcept {
     elibereazaMemorie();
 }
 
@@ -33,17 +32,18 @@ Dispecerat& Dispecerat::operator=(Dispecerat other) {
     return *this;
 }
 
+// adauga un vehicul in sistem (cu verificare ID unic)
 void Dispecerat::adaugaVehicul(const Vehicul& v) {
     if (existaVehicul(v.getId())) {
         Logger::log(LogLevel::ERROR, "ID vehicul duplicat");
         throw VehiculException("Exista deja un vehicul cu acest ID.");
     }
     vehicule.push_back(v.clone());
-    Logger::log(LogLevel::INFO, "Vehicul adaugat: ID " + std::to_string(v.getId()));
+    Logger::log(LogLevel::INFO,
+        "Vehicul adaugat: ID " + std::to_string(v.getId()));
 }
 
-
-
+// verifica existenta unui vehicul dupa ID
 bool Dispecerat::existaVehicul(int id) const {
     for (const auto v : vehicule) {
         if (v->getId() == id) {
@@ -53,6 +53,7 @@ bool Dispecerat::existaVehicul(int id) const {
     return false;
 }
 
+// sterge un vehicul dupa ID
 void Dispecerat::stergeVehicul(int id) {
     for (auto it = vehicule.begin(); it != vehicule.end(); ++it) {
         if ((*it)->getId() == id) {
@@ -64,6 +65,7 @@ void Dispecerat::stergeVehicul(int id) {
     throw VehiculException("Vehiculul cu ID-ul dat nu exista.");
 }
 
+// afiseaza toate vehiculele
 void Dispecerat::afiseazaVehicule() const {
     if (vehicule.empty()) {
         std::cout << "Nu exista vehicule.\n";
@@ -78,11 +80,12 @@ void Dispecerat::afiseazaVehicule() const {
     }
 }
 
-
+// adauga o ruta
 void Dispecerat::adaugaRuta(const Ruta& ruta) {
     rute.push_back(ruta);
 }
 
+// afiseaza rutele disponibile
 void Dispecerat::afiseazaRute() const {
     if (rute.empty()) {
         std::cout << "Nu exista rute.\n";
@@ -96,6 +99,7 @@ void Dispecerat::afiseazaRute() const {
     }
 }
 
+// cauta o ruta dupa nume
 const Ruta* Dispecerat::gasesteRuta(const std::string& nume) const {
     for (const auto& r : rute) {
         if (r.getNume() == nume) {
@@ -105,13 +109,36 @@ const Ruta* Dispecerat::gasesteRuta(const std::string& nume) const {
     return nullptr;
 }
 
-void Dispecerat::adaugaIncident(const Incident& incident) {
-    incidente.push_back(incident);
-    Logger::log(LogLevel::WARNING, "Incident adaugat: " + incident.getDescriere());
+// verifica existenta unei rute
+bool Dispecerat::existaRuta(const std::string& nume) const {
+    for (const auto& r : rute) {
+        if (r.getNume() == nume) {
+            return true;
+        }
+    }
+    return false;
 }
 
+// sterge o ruta dupa nume
+void Dispecerat::stergeRuta(const std::string& nume) {
+    for (auto it = rute.begin(); it != rute.end(); ++it) {
+        if (it->getNume() == nume) {
+            rute.erase(it);
+            Logger::log(LogLevel::INFO, "Ruta stearsa: " + nume);
+            return;
+        }
+    }
+    throw RutaException("Ruta inexistenta.");
+}
 
+// adauga un incident
+void Dispecerat::adaugaIncident(const Incident& incident) {
+    incidente.push_back(incident);
+    Logger::log(LogLevel::WARNING,
+        "Incident adaugat: " + incident.getDescriere());
+}
 
+// afiseaza incidentele active
 void Dispecerat::afiseazaIncidente() const {
     if (incidente.empty()) {
         std::cout << "Nu exista incidente active.\n";
@@ -125,6 +152,7 @@ void Dispecerat::afiseazaIncidente() const {
     }
 }
 
+// calculeaza impactul total al incidentelor
 int Dispecerat::calculeazaImpactTotal() const {
     int total = 0;
     for (const auto& i : incidente) {
@@ -133,7 +161,7 @@ int Dispecerat::calculeazaImpactTotal() const {
     return total;
 }
 
-
+// timpul total pe o ruta pentru toate vehiculele
 double Dispecerat::calculeazaTimpTotal(const std::string& numeRuta) const {
     const Ruta* ruta = gasesteRuta(numeRuta);
     if (!ruta) {
@@ -141,7 +169,6 @@ double Dispecerat::calculeazaTimpTotal(const std::string& numeRuta) const {
     }
 
     double timpTotal = 0.0;
-
     bool existaMetrou = false;
 
     for (const auto v : vehicule) {
@@ -151,55 +178,18 @@ double Dispecerat::calculeazaTimpTotal(const std::string& numeRuta) const {
         }
     }
 
+    // metroul imbunatateste fluxul general
     if (existaMetrou) {
         timpTotal *= 0.97;
     }
 
-
+    // impactul incidentelor
     timpTotal += calculeazaImpactTotal() / 60.0;
 
     return timpTotal;
 }
 
-const std::vector<Vehicul*>& Dispecerat::getVehicule() const {
-    return vehicule;
-}
-
-const std::vector<Ruta>& Dispecerat::getRute() const {
-    return rute;
-}
-
-const std::vector<Incident>& Dispecerat::getIncidente() const {
-    return incidente;
-}
-
-bool Dispecerat::existaRuta(const std::string& nume) const {
-    for (const auto& r : rute) {
-        if (r.getNume() == nume) return true;
-    }
-    return false;
-}
-
-int Dispecerat::numarVehicule() const {
-    return static_cast<int>(vehicule.size());
-}
-
-int Dispecerat::numarIncidente() const {
-    return static_cast<int>(incidente.size());
-}
-
-void Dispecerat::stergeRuta(const std::string& nume) {
-    for (auto it = rute.begin(); it != rute.end(); ++it) {
-        if (it->getNume() == nume) {
-            rute.erase(it);
-            Logger::log(LogLevel::INFO, "Ruta stearsa: " + nume);
-            return;
-        }
-    }
-
-    throw RutaException("Ruta inexistenta.");
-}
-
+// simuleaza o cursa pentru un vehicul specific
 double Dispecerat::simuleazaCursa(
     int idVehicul,
     const std::string& numeRuta
@@ -219,4 +209,26 @@ double Dispecerat::simuleazaCursa(
 
     throw VehiculException("Vehicul inexistent.");
 }
+
+// statistici simple
+int Dispecerat::numarVehicule() const {
+    return static_cast<int>(vehicule.size());
+}
+
+int Dispecerat::numarIncidente() const {
+    return static_cast<int>(incidente.size());
+}
+
+const std::vector<Vehicul*>& Dispecerat::getVehicule() const {
+    return vehicule;
+}
+
+const std::vector<Ruta>& Dispecerat::getRute() const {
+    return rute;
+}
+
+const std::vector<Incident>& Dispecerat::getIncidente() const {
+    return incidente;
+}
+
 

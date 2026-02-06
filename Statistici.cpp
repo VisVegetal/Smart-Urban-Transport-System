@@ -1,15 +1,15 @@
 #include "Statistici.hpp"
+
+#include "Autobuz.hpp"
 #include "Tramvai.hpp"
 #include "Metrou.hpp"
-#include "Autobuz.hpp"
-#include "Dispecerat.hpp"
-
+#include "Exceptii.hpp"
 
 #include <iostream>
 #include <limits>
 
-// ================= VEHICUL CEL MAI RAPID =================
 
+//  vehiculul cu timpul minim de parcurgere pe o ruta
 const Vehicul* Statistici::vehiculCelMaiRapid(
     const Dispecerat& d,
     const std::string& numeRuta
@@ -33,8 +33,8 @@ const Vehicul* Statistici::vehiculCelMaiRapid(
     return vehiculRapid;
 }
 
-// ================= VEHICUL CU CAPACITATE MAXIMA =================
 
+//  vehiculul cu cea mai mare capacitate
 const Vehicul* Statistici::vehiculCapacitateMaxima(
     const Dispecerat& d
 ) {
@@ -52,13 +52,16 @@ const Vehicul* Statistici::vehiculCapacitateMaxima(
 }
 
 
+//  timpul mediu de parcurgere al unei rute
 double Statistici::timpMediuPeRuta(
     const Dispecerat& d,
     const std::string& numeRuta
 ) {
     const Ruta* ruta = d.gasesteRuta(numeRuta);
     if (!ruta) {
-        throw RutaException("Ruta inexistenta pentru calculul timpului mediu.");
+        throw RutaException(
+            "Ruta inexistenta pentru calculul timpului mediu."
+        );
     }
 
     double sumaTimp = 0.0;
@@ -76,25 +79,33 @@ double Statistici::timpMediuPeRuta(
     return sumaTimp / numarVehicule;
 }
 
-// ================= RAPORT GENERAL =================
-
+// raport sumar al sistemului
 void Statistici::raportGeneral(
     const Dispecerat& d
 ) {
     std::cout << "\n===== RAPORT GENERAL SISTEM =====\n";
     std::cout << "Numar total vehicule: "
               << d.getVehicule().size() << "\n";
-
+    std::cout << "Numar incidente: "
+              << d.getIncidente().size() << "\n";
     std::cout << "Raport generat cu succes.\n";
 }
 
+
+//  distributia vehiculelor pe tipuri folosind dynamic_cast
 void Statistici::distributieVehicule(const Dispecerat& d) {
     int autobuze = 0, tramvaie = 0, metrouri = 0;
 
     for (const auto v : d.getVehicule()) {
-        if (dynamic_cast<const Autobuz*>(v)) autobuze++;
-        else if (dynamic_cast<const Tramvai*>(v)) tramvaie++;
-        else if (dynamic_cast<const Metrou*>(v)) metrouri++;
+        if (dynamic_cast<const Autobuz*>(v)) {
+            ++autobuze;
+        }
+        else if (dynamic_cast<const Tramvai*>(v)) {
+            ++tramvaie;
+        }
+        else if (dynamic_cast<const Metrou*>(v)) {
+            ++metrouri;
+        }
     }
 
     std::cout << "Autobuze: " << autobuze << "\n";
@@ -102,21 +113,33 @@ void Statistici::distributieVehicule(const Dispecerat& d) {
     std::cout << "Metrouri: " << metrouri << "\n";
 }
 
-double Statistici::impactMediuIncident(const Dispecerat& d) {
-    if (d.getIncidente().empty()) return 0.0;
+// impactul mediu al incidentelor active
+double Statistici::impactMediuIncident(
+    const Dispecerat& d
+) {
+    if (d.getIncidente().empty()) {
+        return 0.0;
+    }
 
     int total = 0;
     for (const auto& i : d.getIncidente()) {
         total += i.getImpactMinute();
     }
 
-    return static_cast<double>(total) / d.getIncidente().size();
+    return static_cast<double>(total)
+           / static_cast<double>(d.getIncidente().size());
 }
 
-void Statistici::raportDetaliat(const Dispecerat& d) {
+//  raport detaliat al starii sistemului
+void Statistici::raportDetaliat(
+    const Dispecerat& d
+) {
     std::cout << "\n===== RAPORT DETALIAT SISTEM =====\n";
-    std::cout << "Vehicule totale: " << d.numarVehicule() << "\n";
-    std::cout << "Incidente active: " << d.numarIncidente() << "\n";
+    std::cout << "Vehicule totale: "
+              << d.numarVehicule() << "\n";
+    std::cout << "Incidente active: "
+              << d.numarIncidente() << "\n";
     std::cout << "Impact mediu incident: "
-              << impactMediuIncident(d) << " minute\n";
+              << impactMediuIncident(d)
+              << " minute\n";
 }

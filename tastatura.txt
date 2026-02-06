@@ -1,30 +1,47 @@
-4
-Ruta Centrala
-12.5
-4
-Ruta Sud
-8.2
 1
 1
 101
-50
+80
 1
 2
-102
+201
 120
 1
 3
-103
-300
+301
+400
+3
+4
+Centru - Gara
+8.5
+4
+Universitate - Aeroport
+18
+5
 6
 1
 15
-Trafic intens la ora de varf
+Trafic intens in zona centrala
+6
+4
+25
+Accident minor la intersectie
 7
-3
-5
 8
-Ruta Centrala
+Centru - Gara
+11
+101
+Centru - Gara
+11
+301
+Universitate - Aeroport
+14
+15
 9
 10
+12
+13
+3
+5
+7
 0
