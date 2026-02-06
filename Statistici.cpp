@@ -86,32 +86,56 @@ void Statistici::raportGeneral(
     std::cout << "\n===== RAPORT GENERAL SISTEM =====\n";
     std::cout << "Numar total vehicule: "
               << d.getVehicule().size() << "\n";
+    std::cout << "Vehicule create total (static): "
+          << Vehicul::getNumarVehicule() << "\n";
     std::cout << "Numar incidente: "
               << d.getIncidente().size() << "\n";
     std::cout << "Raport generat cu succes.\n";
+
 }
 
 
 //  distributia vehiculelor pe tipuri folosind dynamic_cast
 void Statistici::distributieVehicule(const Dispecerat& d) {
-    int autobuze = 0, tramvaie = 0, metrouri = 0;
+    int autobuze = 0;
+    int tramvaie = 0;
+    int metrouri = 0;
+
+    std::cout << "\n===== DISTRIBUTIE VEHICULE PE TIP =====\n";
 
     for (const auto v : d.getVehicule()) {
-        if (dynamic_cast<const Autobuz*>(v)) {
+
+        if (const auto* a = dynamic_cast<const Autobuz*>(v)) {
             ++autobuze;
+            std::cout << "[Autobuz] ID " << a->getId()
+                      << " | Capacitate: " << a->getCapacitate()
+                      << " | Banda dedicata: "
+                      << (a->areBandaDedicata() ? "DA" : "NU") << "\n";
         }
-        else if (dynamic_cast<const Tramvai*>(v)) {
+        else if (const auto* t = dynamic_cast<const Tramvai*>(v)) {
             ++tramvaie;
+            std::cout << "[Tramvai] ID " << t->getId()
+                      << " | Capacitate: " << t->getCapacitate()
+                      << " | Prioritate intersectii: "
+                      << (t->arePrioritate() ? "DA" : "NU") << "\n";
         }
-        else if (dynamic_cast<const Metrou*>(v)) {
+        else if (const auto* m = dynamic_cast<const Metrou*>(v)) {
             ++metrouri;
+            std::cout << "[Metrou] ID " << m->getId()
+                      << " | Capacitate: " << m->getCapacitate()
+                      << " | Interval: " << m->getIntervalMinute()
+                      << " min | Sistem automat: "
+                      << (m->esteAutomat() ? "DA" : "NU") << "\n";
         }
     }
 
+    std::cout << "\n----- SUMAR -----\n";
     std::cout << "Autobuze: " << autobuze << "\n";
     std::cout << "Tramvaie: " << tramvaie << "\n";
     std::cout << "Metrouri: " << metrouri << "\n";
+    std::cout << "===============================\n";
 }
+
 
 // impactul mediu al incidentelor active
 double Statistici::impactMediuIncident(
@@ -131,15 +155,34 @@ double Statistici::impactMediuIncident(
 }
 
 //  raport detaliat al starii sistemului
-void Statistici::raportDetaliat(
-    const Dispecerat& d
-) {
+void Statistici::raportDetaliat(const Dispecerat& d) {
     std::cout << "\n===== RAPORT DETALIAT SISTEM =====\n";
-    std::cout << "Vehicule totale: "
-              << d.numarVehicule() << "\n";
-    std::cout << "Incidente active: "
-              << d.numarIncidente() << "\n";
-    std::cout << "Impact mediu incident: "
-              << impactMediuIncident(d)
-              << " minute\n";
+
+    for (const auto v : d.getVehicule()) {
+
+        if (const auto* a = dynamic_cast<const Autobuz*>(v)) {
+            std::cout << "[Autobuz] ID " << a->getId()
+                      << " | Capacitate: " << a->getCapacitate()
+                      << " | Opriri: " << a->getNumarOpriri()
+                      << " | Semafoare: " << a->getNumarSemafoare()
+                      << " | Banda dedicata: "
+                      << (a->areBandaDedicata() ? "DA" : "NU") << "\n";
+        }
+        else if (const auto* t = dynamic_cast<const Tramvai*>(v)) {
+            std::cout << "[Tramvai] ID " << t->getId()
+                      << " | Capacitate: " << t->getCapacitate()
+                      << " | Semafoare: " << t->getNumarSemafoare()
+                      << " | Prioritate: "
+                      << (t->arePrioritate() ? "DA" : "NU") << "\n";
+        }
+        else if (const auto* m = dynamic_cast<const Metrou*>(v)) {
+            std::cout << "[Metrou] ID " << m->getId()
+                      << " | Capacitate: " << m->getCapacitate()
+                      << " | Interval: " << m->getIntervalMinute()
+                      << " min | Automat: "
+                      << (m->esteAutomat() ? "DA" : "NU") << "\n";
+        }
+    }
+
+    std::cout << "=================================\n";
 }

@@ -28,6 +28,13 @@ void afiseazaMeniu() {
     std::cout << "13. Incarca sistemul din fisier\n";
     std::cout << "14. Raport detaliat statistici\n";
     std::cout << "15. Distributie vehicule pe tip\n";
+    std::cout << "16. Sterge ruta\n";
+    std::cout << "17. Verifica fisier sistem\n";
+    std::cout << "18. Salveaza raport sistem\n";
+    std::cout << "19. Vehicul cel mai rapid pe ruta\n";
+    std::cout << "20. Vehicul capacitate maxima\n";
+    std::cout << "21. Timp mediu pe ruta\n";
+    std::cout << "22. Raport general sistem\n";
     std::cout << "0.  Iesire\n";
     std::cout << "===================================================\n";
     std::cout << "Optiune: ";
@@ -221,6 +228,68 @@ int main() {
 
             case 15:
                 Statistici::distributieVehicule(dispecerat);
+                break;
+
+            case 16: {
+                std::string nume;
+                curataInput();
+                std::cout << "Nume ruta de sters: ";
+                std::getline(std::cin, nume);
+
+                if (!dispecerat.existaRuta(nume)) {
+                    throw RutaException("Ruta nu exista.");
+                }
+
+                dispecerat.stergeRuta(nume);
+                std::cout << "Ruta stearsa.\n";
+                break;
+            }
+            case 17:
+                if (Persistenta::fisierValid("sistem.txt"))
+                    std::cout << "Fisier valid.\n";
+                else
+                    std::cout << "Fisier inexistent.\n";
+                break;
+
+            case 18:
+                Persistenta::salveazaRaport(dispecerat, "raport.txt");
+                std::cout << "Raport salvat.\n";
+                break;
+
+            case 19: {
+                std::string ruta;
+                curataInput();
+                std::cout << "Ruta: ";
+                std::getline(std::cin, ruta);
+
+                const Vehicul* v = Statistici::vehiculCelMaiRapid(dispecerat, ruta);
+                std::cout << "Cel mai rapid: "
+                          << v->getTip() << " ID " << v->getId() << "\n";
+                break;
+            }
+
+            case 20: {
+            const Vehicul* v = Statistici::vehiculCapacitateMaxima(dispecerat);
+            std::cout << "Capacitate maxima: "
+                      << v->getTip() << " ("
+                      << v->getCapacitate() << ")\n";
+            break;
+            }
+
+            case 21: {
+            std::string ruta;
+            curataInput();
+            std::cout << "Ruta: ";
+            std::getline(std::cin, ruta);
+
+            std::cout << "Timp mediu: "
+                      << Statistici::timpMediuPeRuta(dispecerat, ruta)
+                      << " ore\n";
+            break;
+            }
+
+            case 22:
+                Statistici::raportGeneral(dispecerat);
                 break;
 
             default:
