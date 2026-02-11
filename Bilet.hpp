@@ -4,13 +4,31 @@
 #include <string>
 
 class Bilet {
-private:
-    std::string tip; // "Adult", "Elev", "Pensionar"
-    double pret;
+protected:
+    double pretBaza;
+    std::string serie;
+
 public:
-    Bilet(std::string tip, double pret) : tip(tip), pret(pret) {}
-    double getPret() const { return pret; }
-    std::string getTip() const { return tip; }
+    Bilet(double pret, std::string serie);
+    virtual ~Bilet() = default;
+
+    [[nodiscard]] virtual double getPretFinal() const = 0;
+    [[nodiscard]] virtual std::string getDetalii() const;
+    [[nodiscard]] std::string getSerie() const;
+};
+
+class BiletIntreg : public Bilet {
+public:
+    BiletIntreg(double pret, std::string serie);
+    [[nodiscard]] double getPretFinal() const override;
+};
+
+class BiletRedus : public Bilet {
+private:
+    double procentReducere;
+public:
+    BiletRedus(double pret, std::string serie, double reducere);
+    [[nodiscard]] double getPretFinal() const override;
 };
 
 #endif

@@ -22,4 +22,5 @@ public:
     [[nodiscard]] double getDistanta() const { return distanta; }
 };
 
+
 #endif

@@ -75,6 +75,11 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         Utilitare.hpp
         VehiculFactory.hpp
         Bilet.hpp
+        Bilet.cpp
+        Ticketing.cpp
+        Ticketing.hpp
+        Mentenanta.cpp
+        Mentenanta.hpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )

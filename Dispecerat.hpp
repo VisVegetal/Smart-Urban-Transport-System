@@ -7,61 +7,63 @@
 #include "Vehicul.hpp"
 #include "Ruta.hpp"
 #include "Incident.hpp"
+#include "Mentenanta.hpp"   // NOU: trebuie inclus
+#include "Ticketing.hpp"    // NOU: trebuie inclus
 
 class Dispecerat {
 private:
-    std::vector<Vehicul*> vehicule; // vehicule gestionate
-    std::vector<Ruta> rute; // rutele disponibile
-    std::vector<Incident> incidente; // incidente active
+    std::vector<Vehicul*> vehicule;
+    std::vector<Ruta> rute;
+    std::vector<Incident> incidente;
+
+    // AICI ERA PROBLEMA: Trebuie declarate ca membri ai clasei
+    Mentenanta managementTehnic;
+    SistemTicketing sistemTicketing;
 
     void elibereazaMemorie();
 
 public:
     Dispecerat();
     ~Dispecerat() noexcept;
-
     Dispecerat(const Dispecerat& other);
-
     Dispecerat& operator=(Dispecerat other);
 
-    [[nodiscard]] const std::vector<Vehicul*>& getVehicule() const;
-    [[nodiscard]] const std::vector<Ruta>& getRute() const;
-    [[nodiscard]] const std::vector<Incident>& getIncidente() const;
-
-    // operatii pe rute
-    [[nodiscard]] bool existaRuta(const std::string& nume) const;
-    void stergeRuta(const std::string& nume);
-
-    // statistici simple
-    [[nodiscard]] int numarVehicule() const;
-    [[nodiscard]] int numarIncidente() const;
-
-    // operatii pe vehicule
     void adaugaVehicul(const Vehicul& v);
-    [[nodiscard]] bool existaVehicul(int id) const;
+    bool existaVehicul(int id) const;
     void stergeVehicul(int id);
     void afiseazaVehicule() const;
 
-    // operatii pe rute
     void adaugaRuta(const Ruta& ruta);
     void afiseazaRute() const;
-    [[nodiscard]] const Ruta* gasesteRuta(const std::string& nume) const;
+    const Ruta* gasesteRuta(const std::string& nume) const;
 
-    // operatii pe incidente
     void adaugaIncident(const Incident& incident);
+    int calculeazaImpactTotal() const;
+
+    double simuleazaCursa(int idVehicul, const std::string& numeRuta);
+    double calculeazaTimpTotal(const std::string& numeRuta) const;
+
+    void vindeBilet(bool redus, double pret, double reducere = 0.0);
+    double calculeazaVenituriTotale() const;
+    void sorteazaVehiculeDupaCapacitate();
+    void filtreazaVehiculeDupaTip(const std::string& tip) const;
+
+    Mentenanta& getMentenanta();
+    SistemTicketing& getTicketing();
+
+    int numarVehicule() const;
+    int numarIncidente() const;
+    const std::vector<Vehicul*>& getVehicule() const;
+    const std::vector<Ruta>& getRute() const;
+    const std::vector<Incident>& getIncidente() const;
     void afiseazaIncidente() const;
-    [[nodiscard]] int calculeazaImpactTotal() const;
 
-    // simuleaza o cursa pentru un vehicul pe o ruta
-    [[nodiscard]] double simuleazaCursa(
-        int idVehicul,
-        const std::string& numeRuta
-    ) const;
+    bool existaRuta(const std::string& nume) const;
+    void stergeRuta(const std::string& nume);
 
-    // timpul total pe o ruta
-    [[nodiscard]] double calculeazaTimpTotal(const std::string& numeRuta) const;
+    Mentenanta& getManagementTehnic();
+    SistemTicketing& getSistemTicketing();
 
-    [[nodiscard]] double calculeazaVenituriTotale() const;
 };
 
 #endif

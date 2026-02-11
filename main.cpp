@@ -9,6 +9,9 @@
 #include "Persistenta.hpp"
 #include "Statistici.hpp"
 #include "VehiculFactory.hpp"
+#include "Mentenanta.hpp"
+#include "Ticketing.hpp"
+#include "Bilet.hpp"
 
 void afiseazaMeniu() {
     std::cout << "\n=========== SMART URBAN TRANSPORT SYSTEM ===========\n";
@@ -298,6 +301,26 @@ int main() {
                 std::getline(std::cin, ruta);
                 Statistici::recomandaVehiculOptim(dispecerat, ruta);
                 break;
+            }
+
+            case 25: { // Trimite in service
+            int id;
+            std::string motiv;
+            std::cout << "ID Vehicul: "; std::cin >> id;
+            curataInput();
+            std::cout << "Motiv defectiune: "; std::getline(std::cin, motiv);
+            dispecerat.getManagementTehnic().trimiteInService(id, motiv);
+            break;
+            }
+            case 26: { // Finalizeaza reparatii
+            int id;
+            std::cout << "ID Vehicul reparat: "; std::cin >> id;
+            dispecerat.getManagementTehnic().reparaVehicul(id);
+            break;
+            }
+            case 27: { // Raport Mentenanta
+            dispecerat.getManagementTehnic().genereazaRaportTehnic();
+            break;
             }
 
             default:

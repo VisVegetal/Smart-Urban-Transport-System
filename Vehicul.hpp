@@ -12,7 +12,7 @@ protected:
 
 public:
     Vehicul(int id, int capacitate);
-    virtual ~Vehicul(); // Implementat în cpp pentru decrementare static
+    virtual ~Vehicul();
 
     [[nodiscard]] int getId() const;
     [[nodiscard]] int getCapacitate() const;

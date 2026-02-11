@@ -1,0 +1,37 @@
+#include "Ticketing.hpp"
+#include <iostream>
+
+SistemTicketing::SistemTicketing() : venitTotal(0.0), contorSerie(1000) {}
+
+void SistemTicketing::emiteBiletIntreg(double pret) {
+    std::string serie = "INT-" + std::to_string(++contorSerie);
+    bileteVandute.push_back(std::make_unique<BiletIntreg>(pret, serie));
+}
+
+void SistemTicketing::emiteBiletRedus(double pret, double reducere) {
+    std::string serie = "RED-" + std::to_string(++contorSerie);
+    bileteVandute.push_back(std::make_unique<BiletRedus>(pret, serie, reducere));
+}
+
+double SistemTicketing::calculeazaVenituri() const {
+    double total = 0;
+    for (const auto& b : bileteVandute) {
+        total += b->getPretFinal();
+    }
+    return total;
+}
+
+void SistemTicketing::afiseazaIstoric() const {
+    std::cout << "--- ISTORIC VANZARI BILETE ---\n";
+    for (const auto& b : bileteVandute) {
+        std::cout << b->getDetalii() << " | Pret: " << b->getPretFinal() << " RON\n";
+    }
+}
+
+void SistemTicketing::anuleazaUltimulBilet() {
+    if (!bileteVandute.empty()) bileteVandute.pop_back();
+}
+
+void SistemTicketing::curataIstoric() {
+    bileteVandute.clear();
+}
