@@ -32,6 +32,12 @@ std::string Metrou::getTip() const {
     return "Metrou";
 }
 
+// descriere generica
+std::string Metrou::descriere() const {
+    return "Metrou | ID " + std::to_string(id) +
+           " | Capacitate " + std::to_string(capacitate);
+}
+
 Metrou* Metrou::clone() const {
     return new Metrou(*this);
 }

@@ -6,20 +6,31 @@
 
 class Vehicul {
 protected:
-    int id; //identificator unic al vehiculului
-    int capacitate; // capacitatea maxima de pasageri
-    static int numarVehicule; // numarul total de vehicule create
+    int id;
+    int capacitate;
+    static int numarVehicule;
 
 public:
     Vehicul(int id, int capacitate);
-    virtual ~Vehicul();
+    virtual ~Vehicul(); // Implementat în cpp pentru decrementare static
 
     [[nodiscard]] int getId() const;
     [[nodiscard]] int getCapacitate() const;
 
-    [[nodiscard]] virtual double calculeazaTimp(const Ruta& ruta) const = 0; //timpul de parcurgere a unei rute
-    [[nodiscard]] virtual Vehicul* clone() const = 0;
+    // metoda virtuala pentru calcul timp
+    [[nodiscard]] virtual double calculeazaTimp(const Ruta& ruta) const = 0;
+
+    // tipul vehiculului
     [[nodiscard]] virtual std::string getTip() const = 0;
+
+    // descriere generica
+    [[nodiscard]] virtual std::string descriere() const = 0;
+
+    // clona polimorfica
+    [[nodiscard]] virtual Vehicul* clone() const = 0;
+
+    // calcul venituri sistem bilete
+    [[nodiscard]] virtual double calculeazaVenitEstimativ() const;
 
     static int getNumarVehicule();
 };

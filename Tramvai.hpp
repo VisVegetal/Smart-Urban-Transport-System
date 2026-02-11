@@ -16,6 +16,10 @@ public:
 
     [[nodiscard]] double calculeazaTimp(const Ruta& ruta) const override;
     [[nodiscard]] std::string getTip() const override;
+
+    // descriere generica
+    [[nodiscard]] std::string descriere() const override;
+
     [[nodiscard]] int getNumarSemafoare() const;
     [[nodiscard]] bool arePrioritate() const;
 

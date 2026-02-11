@@ -18,8 +18,11 @@ public:
 
     [[nodiscard]] int getIntervalMinute() const;
     [[nodiscard]] bool esteAutomat() const;
+
     [[nodiscard]] std::string getTip() const override;
 
+    // descriere generica
+    [[nodiscard]] std::string descriere() const override;
 
     [[nodiscard]] Metrou* clone() const override;
 };

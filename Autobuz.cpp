@@ -36,11 +36,16 @@ int Autobuz::getNumarSemafoare() const {
     return numarSemafoare;
 }
 
-Autobuz* Autobuz::clone() const {
-    return new Autobuz(*this);
-}
-
 std::string Autobuz::getTip() const {
     return "Autobuz";
 }
 
+// descriere generica
+std::string Autobuz::descriere() const {
+    return "Autobuz | ID " + std::to_string(id) +
+           " | Capacitate " + std::to_string(capacitate);
+}
+
+Autobuz* Autobuz::clone() const {
+    return new Autobuz(*this);
+}

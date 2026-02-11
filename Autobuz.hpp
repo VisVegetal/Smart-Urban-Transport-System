@@ -25,6 +25,9 @@ public:
 
     [[nodiscard]] std::string getTip() const override;
 
+    // descriere generica
+    [[nodiscard]] std::string descriere() const override;
+
     [[nodiscard]] Autobuz* clone() const override;
 };
 

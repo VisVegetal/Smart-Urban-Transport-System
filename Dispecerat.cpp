@@ -35,11 +35,11 @@ Dispecerat& Dispecerat::operator=(Dispecerat other) {
 // adauga un vehicul in sistem (cu verificare ID unic)
 void Dispecerat::adaugaVehicul(const Vehicul& v) {
     if (existaVehicul(v.getId())) {
-        Logger::log(LogLevel::ERROR, "ID vehicul duplicat");
+        Logger::getInstance().log(LogLevel::ERROR, "ID vehicul duplicat");
         throw VehiculException("Exista deja un vehicul cu acest ID.");
     }
     vehicule.push_back(v.clone());
-    Logger::log(LogLevel::INFO,
+    Logger::getInstance().log(LogLevel::INFO,
         "Vehicul adaugat: ID " + std::to_string(v.getId()));
 }
 
@@ -124,7 +124,7 @@ void Dispecerat::stergeRuta(const std::string& nume) {
     for (auto it = rute.begin(); it != rute.end(); ++it) {
         if (it->getNume() == nume) {
             rute.erase(it);
-            Logger::log(LogLevel::INFO, "Ruta stearsa: " + nume);
+            Logger::getInstance().log(LogLevel::INFO, "Ruta stearsa: " + nume);
             return;
         }
     }
@@ -134,7 +134,7 @@ void Dispecerat::stergeRuta(const std::string& nume) {
 // adauga un incident
 void Dispecerat::adaugaIncident(const Incident& incident) {
     incidente.push_back(incident);
-    Logger::log(LogLevel::WARNING,
+    Logger::getInstance().log(LogLevel::WARNING,
         "Incident adaugat: " + incident.getDescriere());
 }
 
@@ -229,6 +229,14 @@ const std::vector<Ruta>& Dispecerat::getRute() const {
 
 const std::vector<Incident>& Dispecerat::getIncidente() const {
     return incidente;
+}
+
+double Dispecerat::calculeazaVenituriTotale() const {
+    double total = 0.0;
+    for (const auto v : vehicule) {
+        total += v->calculeazaVenitEstimativ();
+    }
+    return total;
 }
 
 

@@ -60,6 +60,8 @@ public:
 
     // timpul total pe o ruta
     [[nodiscard]] double calculeazaTimpTotal(const std::string& numeRuta) const;
+
+    [[nodiscard]] double calculeazaVenituriTotale() const;
 };
 
 #endif

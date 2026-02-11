@@ -1,16 +1,18 @@
 #include "Statistici.hpp"
 
+#include "Dispecerat.hpp"
+#include "Vehicul.hpp"
 #include "Autobuz.hpp"
 #include "Tramvai.hpp"
 #include "Metrou.hpp"
 #include "Exceptii.hpp"
 #include "Statie.hpp"
+#include "Statistica.hpp"
 
 #include <iostream>
 #include <limits>
 
-
-//  vehiculul cu timpul minim de parcurgere pe o ruta
+// vehiculul cu timpul minim de parcurgere pe o ruta
 const Vehicul* Statistici::vehiculCelMaiRapid(
     const Dispecerat& d,
     const std::string& numeRuta
@@ -34,8 +36,7 @@ const Vehicul* Statistici::vehiculCelMaiRapid(
     return vehiculRapid;
 }
 
-
-//  vehiculul cu cea mai mare capacitate
+// vehiculul cu cea mai mare capacitate
 const Vehicul* Statistici::vehiculCapacitateMaxima(
     const Dispecerat& d
 ) {
@@ -52,8 +53,7 @@ const Vehicul* Statistici::vehiculCapacitateMaxima(
     return vehiculMax;
 }
 
-
-//  timpul mediu de parcurgere al unei rute
+// timpul mediu de parcurgere al unei rute
 double Statistici::timpMediuPeRuta(
     const Dispecerat& d,
     const std::string& numeRuta
@@ -65,26 +65,19 @@ double Statistici::timpMediuPeRuta(
         );
     }
 
-    double sumaTimp = 0.0;
-    int numarVehicule = 0;
+    Statistica<double> stat; // folosire clasa template
 
     for (const auto v : d.getVehicule()) {
-        sumaTimp += v->calculeazaTimp(*ruta);
-        ++numarVehicule;
+        stat.adauga(v->calculeazaTimp(*ruta));
     }
 
-    if (numarVehicule == 0) {
-        return 0.0;
-    }
-
-    return sumaTimp / numarVehicule;
+    return stat.medie();
 }
 
 // raport sumar al sistemului
 void Statistici::raportGeneral(const Dispecerat& d) {
     std::cout << "\n===== RAPORT GENERAL SISTEM =====\n";
 
-    // statistici generale despre sistem
     std::cout << "Vehicule active in sistem: "
               << d.numarVehicule() << "\n";
 
@@ -94,7 +87,6 @@ void Statistici::raportGeneral(const Dispecerat& d) {
     std::cout << "Incidente active: "
               << d.numarIncidente() << "\n";
 
-    // exemple de statii simbolice (raportare)
     Statie s1("Centru");
     Statie s2("Aeroport");
 
@@ -109,10 +101,7 @@ void Statistici::raportGeneral(const Dispecerat& d) {
     std::cout << "================================\n";
 }
 
-
-
-
-//  distributia vehiculelor pe tipuri folosind dynamic_cast
+// distributia vehiculelor pe tipuri
 void Statistici::distributieVehicule(const Dispecerat& d) {
     int autobuze = 0;
     int tramvaie = 0;
@@ -153,25 +142,20 @@ void Statistici::distributieVehicule(const Dispecerat& d) {
     std::cout << "===============================\n";
 }
 
-
-// impactul mediu al incidentelor active
+// impactul mediu al incidentelor
 double Statistici::impactMediuIncident(
     const Dispecerat& d
 ) {
-    if (d.getIncidente().empty()) {
-        return 0.0;
-    }
+    Statistica<int> stat; // folosire clasa template
 
-    int total = 0;
     for (const auto& i : d.getIncidente()) {
-        total += i.getImpactMinute();
+        stat.adauga(i.getImpactMinute());
     }
 
-    return static_cast<double>(total)
-           / static_cast<double>(d.getIncidente().size());
+    return stat.medie();
 }
 
-//  raport detaliat al starii sistemului
+// raport detaliat al starii sistemului
 void Statistici::raportDetaliat(const Dispecerat& d) {
     std::cout << "\n===== RAPORT DETALIAT SISTEM =====\n";
 
@@ -202,9 +186,36 @@ void Statistici::raportDetaliat(const Dispecerat& d) {
     }
 
     std::cout << "Impact mediu per incident: "
-          << impactMediuIncident(d)
-          << " minute\n";
-
+              << impactMediuIncident(d)
+              << " minute\n";
 
     std::cout << "=================================\n";
+}
+
+void Statistici::recomandaVehiculOptim(const Dispecerat& d, const std::string& numeRuta) {
+    const Ruta* ruta = d.gasesteRuta(numeRuta);
+    if (!ruta) throw RutaException("Ruta inexistenta pentru analiza smart.");
+
+    const Vehicul* recomandat = nullptr;
+    double celMaiScurtTimp = 999999.0;
+
+    std::cout << "\n--- ANALIZA SMART ROUTING PENTRU: " << numeRuta << " ---\n";
+
+    for (const auto v : d.getVehicule()) {
+        double timp = v->calculeazaTimp(*ruta);
+        timp += d.calculeazaImpactTotal() / 60.0; // Adaugam incidentele globale
+
+        std::cout << "> " << v->getTip() << " ID " << v->getId()
+                  << " | Timp estimat: " << timp << " ore\n";
+
+        if (timp < celMaiScurtTimp) {
+            celMaiScurtTimp = timp;
+            recomandat = v;
+        }
+    }
+
+    if (recomandat) {
+        std::cout << "\n[DECIZIE SISTEM]: Pe baza conditiilor actuale, recomandam "
+                  << recomandat->getTip() << " (ID " << recomandat->getId() << ")\n";
+    }
 }

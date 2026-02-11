@@ -3,7 +3,15 @@
 #include <fstream>
 #include "Exceptii.hpp"
 
-std::vector<std::string> Logger::logs;
+Logger* Logger::instance = nullptr;
+
+// obtine instanta unica a logger-ului
+Logger& Logger::getInstance() {
+    if (!instance) {
+        instance = new Logger();
+    }
+    return *instance;
+}
 
 // converteste nivelul de log intr-un format text
 std::string Logger::levelToString(LogLevel level) {
@@ -22,7 +30,7 @@ void Logger::log(LogLevel level, const std::string& mesaj) {
 }
 
 // afiseaza toate mesajele de log
-void Logger::afiseazaLoguri() {
+void Logger::afiseazaLoguri() const {
     if (logs.empty()) {
         std::cout << "Nu exista loguri.\n";
         return;
@@ -34,7 +42,7 @@ void Logger::afiseazaLoguri() {
 }
 
 // salveaza logurile intr-un fisier text
-void Logger::salveazaInFisier(const std::string& numeFisier) {
+void Logger::salveazaInFisier(const std::string& numeFisier) const {
     std::ofstream fout(numeFisier);
     if (!fout) {
         throw TransportException("Nu se poate deschide fisierul de log.");

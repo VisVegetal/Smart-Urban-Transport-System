@@ -4,12 +4,11 @@
 
 #include "Dispecerat.hpp"
 #include "Autobuz.hpp"
-#include "Tramvai.hpp"
-#include "Metrou.hpp"
 #include "Exceptii.hpp"
 #include "Logger.hpp"
 #include "Persistenta.hpp"
 #include "Statistici.hpp"
+#include "VehiculFactory.hpp"
 
 void afiseazaMeniu() {
     std::cout << "\n=========== SMART URBAN TRANSPORT SYSTEM ===========\n";
@@ -80,15 +79,8 @@ int main() {
                 std::cout << "Capacitate: ";
                 std::cin >> capacitate;
 
-                if (tip == 1) {
-                    dispecerat.adaugaVehicul(Autobuz(id, capacitate));
-                } else if (tip == 2) {
-                    dispecerat.adaugaVehicul(Tramvai(id, capacitate));
-                } else if (tip == 3) {
-                    dispecerat.adaugaVehicul(Metrou(id, capacitate));
-                } else {
-                    throw TransportException("Tip vehicul invalid.");
-                }
+                auto v = VehiculFactory::creeazaVehicul(tip, id, capacitate);
+                dispecerat.adaugaVehicul(*v);
 
                 std::cout << "Vehicul adaugat.\n";
                 break;
@@ -181,11 +173,11 @@ int main() {
             // logging
 
             case 9:
-                Logger::afiseazaLoguri();
+                Logger::getInstance().afiseazaLoguri();
                 break;
 
             case 10:
-                Logger::salveazaInFisier("loguri.txt");
+                Logger::getInstance().salveazaInFisier("loguri.txt");
                 std::cout << "Loguri salvate.\n";
                 break;
 
@@ -269,28 +261,44 @@ int main() {
             }
 
             case 20: {
-            const Vehicul* v = Statistici::vehiculCapacitateMaxima(dispecerat);
-            std::cout << "Capacitate maxima: "
-                      << v->getTip() << " ("
-                      << v->getCapacitate() << ")\n";
-            break;
+                const Vehicul* v = Statistici::vehiculCapacitateMaxima(dispecerat);
+                std::cout << "Capacitate maxima: "
+                          << v->getTip() << " ("
+                          << v->getCapacitate() << ")\n";
+                break;
             }
 
             case 21: {
-            std::string ruta;
-            curataInput();
-            std::cout << "Ruta: ";
-            std::getline(std::cin, ruta);
+                std::string ruta;
+                curataInput();
+                std::cout << "Ruta: ";
+                std::getline(std::cin, ruta);
 
-            std::cout << "Timp mediu: "
-                      << Statistici::timpMediuPeRuta(dispecerat, ruta)
-                      << " ore\n";
-            break;
+                std::cout << "Timp mediu: "
+                          << Statistici::timpMediuPeRuta(dispecerat, ruta)
+                          << " ore\n";
+                break;
             }
 
-            case 22:
+            case 22: {
                 Statistici::raportGeneral(dispecerat);
                 break;
+            }
+
+            case 23: {
+                std::cout << "Venituri estimate din bilete (toate vehiculele): "
+                          << dispecerat.calculeazaVenituriTotale() << " RON\n";
+                break;
+            }
+
+            case 24: {
+                std::string ruta;
+                curataInput();
+                std::cout << "Nume ruta pentru optimizare: ";
+                std::getline(std::cin, ruta);
+                Statistici::recomandaVehiculOptim(dispecerat, ruta);
+                break;
+            }
 
             default:
                 std::cout << "Optiune invalida.\n";

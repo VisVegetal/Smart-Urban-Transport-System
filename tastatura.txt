@@ -1,58 +1,52 @@
 1
 1
 101
-80
+50
 1
 2
 201
-120
+80
 1
 3
 301
-400
+300
 3
 4
-Centru - Gara
-8.5
+Centru-Nord
+12.5
 4
-Universitate - Aeroport
-18
+Centru-Sud
+8.0
 5
 6
-1
+3
 15
-Trafic intens in zona centrala
-6
-4
-25
-Accident minor la intersectie
+Defectiune pe sina
 7
 8
-Centru - Gara
-11
-101
-Centru - Gara
-11
-301
-Universitate - Aeroport
-14
-15
-16
-Centru - Gara
-5
-17
-18
+Centru-Nord
 9
 10
+11
+101
+Centru-Nord
 12
 13
-3
-5
-7
+14
+15
+17
+18
 19
-Universitate - Aeroport
+Centru-Nord
 20
 21
-Universitate - Aeroport
+Centru-Nord
 22
+23
+24
+Centru-Nord
+16
+Centru-Sud
+2
+201
 0

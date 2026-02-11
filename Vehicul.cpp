@@ -5,30 +5,22 @@ int Vehicul::numarVehicule = 0;
 
 Vehicul::Vehicul(int id, int capacitate)
     : id(id), capacitate(capacitate) {
-
     if (capacitate <= 0) {
         throw VehiculException("Capacitate invalida, trebuie sa fie pozitiva.");
     }
-
     ++numarVehicule;
 }
 
-// destructorul decrementeaza numarul total de vehicule
 Vehicul::~Vehicul(){
     --numarVehicule;
 }
 
-// ID-ul vehiculului
-int Vehicul::getId() const {
-    return id;
+int Vehicul::getId() const { return id; }
+int Vehicul::getCapacitate() const { return capacitate; }
+
+double Vehicul::calculeazaVenitEstimativ() const {
+    // Grad ocupare mediu 60% si bilet 3.5 RON
+    return (this->capacitate * 0.6) * 3.5;
 }
 
-// capacitatea vehiculului
-int Vehicul::getCapacitate() const {
-    return capacitate;
-}
-
-// numarul total de vehicule existente
-int Vehicul::getNumarVehicule() {
-    return numarVehicule;
-}
+int Vehicul::getNumarVehicule() { return numarVehicule; }

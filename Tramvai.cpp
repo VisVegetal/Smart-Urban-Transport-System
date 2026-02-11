@@ -28,10 +28,16 @@ bool Tramvai::arePrioritate() const {
     return prioritateIntersectii;
 }
 
-Tramvai* Tramvai::clone() const {
-    return new Tramvai(*this);
-}
-
 std::string Tramvai::getTip() const {
     return "Tramvai";
+}
+
+// descriere generica
+std::string Tramvai::descriere() const {
+    return "Tramvai | ID " + std::to_string(id) +
+           " | Capacitate " + std::to_string(capacitate);
+}
+
+Tramvai* Tramvai::clone() const {
+    return new Tramvai(*this);
 }

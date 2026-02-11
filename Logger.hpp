@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-//niveluri de severitate ale mesajelor de log
+// niveluri de severitate ale mesajelor de log
 enum class LogLevel {
     INFO,
     WARNING,
@@ -13,13 +13,21 @@ enum class LogLevel {
 
 class Logger {
 private:
-    static std::vector<std::string> logs;
+    static Logger* instance;                 // instanta unica
+    std::vector<std::string> logs;           // loguri interne
+
+    Logger() = default;                      // constructor privat
+    Logger(const Logger&) = delete;          // fara copiere
+    Logger& operator=(const Logger&) = delete;
+
     static std::string levelToString(LogLevel level);
 
 public:
-    static void log(LogLevel level, const std::string& mesaj);
-    static void afiseazaLoguri();
-    static void salveazaInFisier(const std::string& numeFisier);
+    static Logger& getInstance();             // acces la instanta unica
+
+    void log(LogLevel level, const std::string& mesaj);
+    void afiseazaLoguri() const;
+    void salveazaInFisier(const std::string& numeFisier) const;
 };
 
 #endif

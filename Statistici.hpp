@@ -2,30 +2,21 @@
 #define STATISTICI_HPP
 
 #include <string>
-#include "Dispecerat.hpp"
+#include "Statistica.hpp"
+
+class Dispecerat;
+class Vehicul;
 
 class Statistici {
 public:
     static void distributieVehicule(const Dispecerat& d);
     static double impactMediuIncident(const Dispecerat& d);
     static void raportDetaliat(const Dispecerat& d);
-
-    // vehiculul cel mai rapid pe o anumita ruta
-    static const Vehicul* vehiculCelMaiRapid(
-        const Dispecerat& d,
-        const std::string& numeRuta
-    );
-
-    static const Vehicul* vehiculCapacitateMaxima(
-        const Dispecerat& d
-    );
-
-    static double timpMediuPeRuta(
-        const Dispecerat& d,
-        const std::string& numeRuta
-    );
-
+    static const Vehicul* vehiculCelMaiRapid(const Dispecerat& d, const std::string& numeRuta);
+    static const Vehicul* vehiculCapacitateMaxima(const Dispecerat& d);
+    static double timpMediuPeRuta(const Dispecerat& d, const std::string& numeRuta);
     static void raportGeneral(const Dispecerat& d);
+    static void recomandaVehiculOptim(const Dispecerat& d, const std::string& numeRuta);
 };
 
 #endif
