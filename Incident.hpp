@@ -2,35 +2,44 @@
 #define INCIDENT_HPP
 
 #include <string>
-#include <utility>
-#include "Exceptii.hpp"
+#include <iostream>
 
 enum class TipIncident {
     TRAFIC_INTENS,
     INTARZIERE,
     DEFECTIUNE,
-    ACCIDENT
+    ACCIDENT,
+    METEO_NEFAVORABIL,
+    LUCRARI_DRUM
 };
 
 class Incident {
 private:
     TipIncident tip;
-    std::string descriere; //descriere textuala
-    int impactMinute; //impactul in minute asupra traficului
+    std::string descriere;
+    int impactMinute;
+    std::string dataRaportarii;
 
 public:
-    Incident(TipIncident tip,
-             std::string  descriere,
-             int impactMinute)
-        : tip(tip), descriere(std::move(descriere)), impactMinute(impactMinute) {
-        if (impactMinute < 0) {
-            throw ValoareInvalidaException("Impact negativ.");
-        }
-    }
+    Incident();
+    Incident(TipIncident tip, std::string descriere, int impactMinute, std::string data = "11-02-2026");
 
-    [[nodiscard]] TipIncident getTip() const { return tip; }
-    [[nodiscard]] const std::string& getDescriere() const { return descriere; }
-    [[nodiscard]] int getImpactMinute() const { return impactMinute; }
+    Incident(const Incident& other);
+    Incident& operator=(const Incident& other);
+    ~Incident() = default;
+
+    [[nodiscard]] TipIncident getTip() const;
+    [[nodiscard]] const std::string& getDescriere() const;
+    [[nodiscard]] int getImpactMinute() const;
+    [[nodiscard]] std::string getTipString() const;
+
+    void setImpactMinute(int minute);
+    void setDescriere(const std::string& desc);
+
+    bool operator==(const Incident& other) const;
+    bool operator<(const Incident& other) const;
+
+    friend std::ostream& operator<<(std::ostream& os, const Incident& i);
 };
 
 #endif

@@ -12,21 +12,24 @@ private:
     std::map<int, StareVehicul> statusFlota;
     std::map<int, int> kmParcursi;
     std::map<int, std::vector<std::string>> istoricService;
-    const int PRAG_REVIZIE = 5000;
-
+    static constexpr int PRAG_REVIZIE = 5000;
 public:
     Mentenanta() = default;
-    
+    Mentenanta(const Mentenanta& other) = default;
+    Mentenanta& operator=(const Mentenanta& other) = default;
+    ~Mentenanta() = default;
+
     void actualizeazaKilometraj(int id, int km);
     void trimiteInService(int id, const std::string& motiv);
     void reparaVehicul(int id);
-    
-    bool poateRula(int id) const;
-    std::string getStatusDetalii(int id) const;
-    void genereazaRaportTehnic() const;
-    
+
+    [[nodiscard]] bool poateRula(int id) const;
+    [[nodiscard]] std::string getStatusDetalii(int id) const;
+    [[nodiscard]] int getKilometri(int id) const;
+
     void adaugaNotitaTehnica(int id, const std::string& nota);
-    int getKilometri(int id) const;
+
+    void genereazaRaportTehnic() const;
 };
 
 #endif

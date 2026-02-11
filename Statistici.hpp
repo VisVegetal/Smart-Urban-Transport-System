@@ -2,7 +2,6 @@
 #define STATISTICI_HPP
 
 #include <string>
-#include "Statistica.hpp"
 
 class Dispecerat;
 class Vehicul;

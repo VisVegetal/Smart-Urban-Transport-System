@@ -1,175 +1,79 @@
 #include "Persistenta.hpp"
-
+#include "VehiculFactory.hpp"
+#include "Exceptii.hpp"
 #include <fstream>
 #include <sstream>
 
-#include "Dispecerat.hpp"
-#include "Autobuz.hpp"
-#include "Tramvai.hpp"
-#include "Metrou.hpp"
-#include "Ruta.hpp"
-#include "Incident.hpp"
-#include "Exceptii.hpp"
+void Persistenta::salveazaSistem(const Dispecerat& d, const std::string& numeFisier) {
+    std::ofstream f(numeFisier);
+    if (!f.is_open()) throw TransportException("Nu s-a putut deschide fisierul pentru salvare.");
 
-// salvare
-
-void Persistenta::salveaza(
-    const Dispecerat& d,
-    const std::string& numeFisier
-) {
-    std::ofstream fout(numeFisier);
-    if (!fout) {
-        throw TransportException(
-            "Nu se poate deschide fisierul pentru salvare."
-        );
-    }
-
-    // rute
-    fout << "[RUTE]\n";
-    for (const auto& r : d.getRute()) {
-        fout << r.getNume() << ";"
-             << r.getDistanta() << "\n";
-    }
-
-    // vehicule
-    fout << "[VEHICULE]\n";
+    f << "VEHICULE_START\n";
     for (const auto v : d.getVehicule()) {
-        fout << v->getTip() << ";"
-             << v->getId() << ";"
-             << v->getCapacitate() << "\n";
+        int tipInt = (v->getTip() == "Autobuz") ? 1 : (v->getTip() == "Tramvai") ? 2 : 3;
+        f << tipInt << " " << v->getId() << " " << v->getCapacitate() << "\n";
     }
+    f << "VEHICULE_END\n";
 
-    // incidente
-    fout << "[INCIDENTE]\n";
-    for (const auto& i : d.getIncidente()) {
-        fout << static_cast<int>(i.getTip()) << ";"
-             << i.getImpactMinute() << ";"
-             << i.getDescriere() << "\n";
+    f << "RUTE_START\n";
+    for (const auto& r : d.getRute()) {
+        f << r.getNume() << ";" << r.getDistanta() << "\n";
     }
+    f << "RUTE_END\n";
+
+    f.close();
 }
 
-// incarcare
-
-void Persistenta::incarca(
-    Dispecerat& d,
-    const std::string& numeFisier
-) {
-    std::ifstream fin(numeFisier);
-    if (!fin) {
-        throw TransportException(
-            "Nu se poate deschide fisierul pentru incarcare."
-        );
-    }
+void Persistenta::incarcaSistem(Dispecerat& d, const std::string& numeFisier) {
+    std::ifstream f(numeFisier);
+    if (!f.is_open()) throw TransportException("Fisierul de date nu exista.");
 
     std::string linie;
+    std::string sectiuneCurenta;
 
-    // sectiunile fisierului
-    enum Sectiune { NIMIC, RUTE, VEHICULE, INCIDENTE };
-    Sectiune sect = NIMIC;
+    while (std::getline(f, linie)) {
+        if (linie == "VEHICULE_START") { sectiuneCurenta = "VEHICULE"; continue; }
+        if (linie == "RUTE_START") { sectiuneCurenta = "RUTE"; continue; }
+        if (linie.find("_END") != std::string::npos) { sectiuneCurenta = ""; continue; }
 
-    while (std::getline(fin, linie)) {
-
-        // detectare sectiuni
-        if (linie == "[RUTE]") {
-            sect = RUTE;
-            continue;
-        }
-        if (linie == "[VEHICULE]") {
-            sect = VEHICULE;
-            continue;
-        }
-        if (linie == "[INCIDENTE]") {
-            sect = INCIDENTE;
-            continue;
-        }
-
-        if (linie.empty()) {
-            continue;
-        }
-
-        std::stringstream ss(linie);
-
-        // rute
-        if (sect == RUTE) {
-            std::string nume;
-            double dist;
-
-            std::getline(ss, nume, ';');
-            ss >> dist;
-
-            d.adaugaRuta(Ruta(nume, dist));
-        }
-
-        // vehicule
-        else if (sect == VEHICULE) {
-            std::string tip;
-            int id, cap;
-
-            std::getline(ss, tip, ';');
-            ss >> id;
-            ss.ignore();
-            ss >> cap;
-
-            if (tip == "Autobuz") {
-                d.adaugaVehicul(Autobuz(id, cap));
-            }
-            else if (tip == "Tramvai") {
-                d.adaugaVehicul(Tramvai(id, cap));
-            }
-            else if (tip == "Metrou") {
-                d.adaugaVehicul(Metrou(id, cap));
+        if (sectiuneCurenta == "VEHICULE") {
+            std::stringstream ss(linie);
+            int tip, id, cap;
+            if (ss >> tip >> id >> cap) {
+                auto v = VehiculFactory::creeazaVehicul(tip, id, cap);
+                if (!d.existaVehicul(id)) d.adaugaVehicul(*v);
             }
         }
-
-        // incidente
-        else if (sect == INCIDENTE) {
-            int tipInt, impact;
-            std::string descriere;
-
-            ss >> tipInt;
-            ss.ignore();
-            ss >> impact;
-            ss.ignore();
-            std::getline(ss, descriere);
-
-            d.adaugaIncident(
-                Incident(
-                    static_cast<TipIncident>(tipInt),
-                    descriere,
-                    impact
-                )
-            );
+        else if (sectiuneCurenta == "RUTE") {
+            size_t delim = linie.find(';');
+            if (delim != std::string::npos) {
+                std::string nume = linie.substr(0, delim);
+                double dist = std::stod(linie.substr(delim + 1));
+                if (!d.existaRuta(nume)) d.adaugaRuta(Ruta(nume, dist));
+            }
         }
     }
+    f.close();
 }
 
-// validare
+bool Persistenta::esteFisierValid(const std::string& numeFisier) {
+    std::ifstream f(numeFisier);
+    if (!f.is_open()) return false;
 
-bool Persistenta::fisierValid(
-    const std::string& numeFisier
-) {
-    std::ifstream fin(numeFisier);
-    return fin.good();
+    std::string primaLinie;
+    std::getline(f, primaLinie);
+    f.close();
+
+    return (primaLinie == "VEHICULE_START");
 }
 
-// raport
+void Persistenta::creeazaBackup(const std::string& sursa, const std::string& destinatie) {
+    std::ifstream src(sursa, std::ios::binary);
+    std::ofstream dst(destinatie, std::ios::binary);
 
-void Persistenta::salveazaRaport(
-    const Dispecerat& d,
-    const std::string& fisier
-) {
-    std::ofstream fout(fisier);
-    if (!fout) {
-        throw TransportException(
-            "Nu se poate crea fisierul de raport."
-        );
+    if (src.is_open() && dst.is_open()) {
+        dst << src.rdbuf();
     }
-
-    fout << "=== RAPORT SISTEM TRANSPORT ===\n";
-    fout << "Numar vehicule: "
-         << d.numarVehicule() << "\n";
-    fout << "Numar incidente: "
-         << d.numarIncidente() << "\n";
-    fout << "Impact total (minute): "
-         << d.calculeazaImpactTotal() << "\n";
+    src.close();
+    dst.close();
 }

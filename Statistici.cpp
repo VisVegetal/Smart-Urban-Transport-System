@@ -1,5 +1,4 @@
 #include "Statistici.hpp"
-
 #include "Dispecerat.hpp"
 #include "Vehicul.hpp"
 #include "Autobuz.hpp"
@@ -65,7 +64,7 @@ double Statistici::timpMediuPeRuta(
         );
     }
 
-    Statistica<double> stat; // folosire clasa template
+    Statistica<double> stat;
 
     for (const auto v : d.getVehicule()) {
         stat.adauga(v->calculeazaTimp(*ruta));
@@ -79,13 +78,13 @@ void Statistici::raportGeneral(const Dispecerat& d) {
     std::cout << "\n===== RAPORT GENERAL SISTEM =====\n";
 
     std::cout << "Vehicule active in sistem: "
-              << d.numarVehicule() << "\n";
+              << d.getVehicule().size() << "\n";
 
     std::cout << "Vehicule create total (static): "
               << Vehicul::getNumarVehicule() << "\n";
 
     std::cout << "Incidente active: "
-              << d.numarIncidente() << "\n";
+              << d.getIncidente().size() << "\n";
 
     Statie s1("Centru");
     Statie s2("Aeroport");
@@ -110,7 +109,6 @@ void Statistici::distributieVehicule(const Dispecerat& d) {
     std::cout << "\n===== DISTRIBUTIE VEHICULE PE TIP =====\n";
 
     for (const auto v : d.getVehicule()) {
-
         if (const auto* a = dynamic_cast<const Autobuz*>(v)) {
             ++autobuze;
             std::cout << "[Autobuz] ID " << a->getId()
@@ -142,25 +140,18 @@ void Statistici::distributieVehicule(const Dispecerat& d) {
     std::cout << "===============================\n";
 }
 
-// impactul mediu al incidentelor
-double Statistici::impactMediuIncident(
-    const Dispecerat& d
-) {
-    Statistica<int> stat; // folosire clasa template
-
+double Statistici::impactMediuIncident(const Dispecerat& d) {
+    Statistica<int> stat;
     for (const auto& i : d.getIncidente()) {
         stat.adauga(i.getImpactMinute());
     }
-
     return stat.medie();
 }
 
-// raport detaliat al starii sistemului
 void Statistici::raportDetaliat(const Dispecerat& d) {
     std::cout << "\n===== RAPORT DETALIAT SISTEM =====\n";
 
     for (const auto v : d.getVehicule()) {
-
         if (const auto* a = dynamic_cast<const Autobuz*>(v)) {
             std::cout << "[Autobuz] ID " << a->getId()
                       << " | Capacitate: " << a->getCapacitate()
@@ -203,7 +194,7 @@ void Statistici::recomandaVehiculOptim(const Dispecerat& d, const std::string& n
 
     for (const auto v : d.getVehicule()) {
         double timp = v->calculeazaTimp(*ruta);
-        timp += d.calculeazaImpactTotal() / 60.0; // Adaugam incidentele globale
+        timp += d.calculeazaImpactTotal() / 60.0;
 
         std::cout << "> " << v->getTip() << " ID " << v->getId()
                   << " | Timp estimat: " << timp << " ore\n";

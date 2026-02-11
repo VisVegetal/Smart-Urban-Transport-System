@@ -1,6 +1,6 @@
 #include "Mentenanta.hpp"
 #include <iostream>
-#include <algorithm>
+#include <ranges>
 
 void Mentenanta::actualizeazaKilometraj(int id, int km) {
     kmParcursi[id] += km;
@@ -17,18 +17,17 @@ void Mentenanta::trimiteInService(int id, const std::string& motiv) {
 void Mentenanta::reparaVehicul(int id) {
     statusFlota[id] = StareVehicul::FUNCTIONAL;
     kmParcursi[id] = 0;
-    istoricService[id].push_back("Reparatie finalizata. Kilometraj resetat.");
+    istoricService[id].emplace_back("Reparatie finalizata. Kilometraj resetat.");
 }
 
 bool Mentenanta::poateRula(int id) const {
-    if (statusFlota.find(id) == statusFlota.end()) return true;
-    StareVehicul s = statusFlota.at(id);
-    return (s == StareVehicul::FUNCTIONAL || s == StareVehicul::REPARATII_NECESARE);
+    if (!statusFlota.contains(id)) return true;
+    return statusFlota.at(id) == StareVehicul::FUNCTIONAL;
 }
 
 std::string Mentenanta::getStatusDetalii(int id) const {
-    if (statusFlota.find(id) == statusFlota.end()) return "NOU/NEINREGISTRAT";
-    
+    if (!statusFlota.contains(id)) return "NOU/NEINREGISTRAT";
+
     StareVehicul s = statusFlota.at(id);
     std::string txt;
     switch(s) {
@@ -36,15 +35,18 @@ std::string Mentenanta::getStatusDetalii(int id) const {
         case StareVehicul::REPARATII_NECESARE: txt = "REVIZIE NECESARA"; break;
         case StareVehicul::IN_SERVICE: txt = "IN REPARATIE"; break;
         case StareVehicul::CASAT: txt = "SCOS DIN UZ"; break;
+        default: txt = "NECUNOSCUT"; break;
     }
-    return txt + " (" + std::to_string(kmParcursi.at(id)) + " km)";
+
+    int km = kmParcursi.contains(id) ? kmParcursi.at(id) : 0;
+    return txt + " (" + std::to_string(km) + " km)";
 }
 
 void Mentenanta::genereazaRaportTehnic() const {
     std::cout << "\n========== RAPORT TEHNIC FLOTA ==========\n";
-    for (auto const& [id, km] : kmParcursi) {
+    for (int id : kmParcursi | std::views::keys) {
         std::cout << "ID: " << id << " | Status: " << getStatusDetalii(id) << "\n";
-        if (istoricService.count(id)) {
+        if (istoricService.contains(id)) {
             for (const auto& log : istoricService.at(id)) {
                 std::cout << "  - " << log << "\n";
             }
@@ -58,6 +60,6 @@ void Mentenanta::adaugaNotitaTehnica(int id, const std::string& nota) {
 }
 
 int Mentenanta::getKilometri(int id) const {
-    if (kmParcursi.count(id)) return kmParcursi.at(id);
+    if (kmParcursi.contains(id)) return kmParcursi.at(id);
     return 0;
 }

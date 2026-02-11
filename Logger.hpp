@@ -13,17 +13,17 @@ enum class LogLevel {
 
 class Logger {
 private:
-    static Logger* instance;                 // instanta unica
-    std::vector<std::string> logs;           // loguri interne
+    static Logger* instance;
+    std::vector<std::string> logs;
 
-    Logger() = default;                      // constructor privat
-    Logger(const Logger&) = delete;          // fara copiere
-    Logger& operator=(const Logger&) = delete;
-
+    Logger() = default;
     static std::string levelToString(LogLevel level);
 
 public:
-    static Logger& getInstance();             // acces la instanta unica
+    static Logger& getInstance();
+
+    Logger(const Logger&) = delete;
+    Logger& operator=(const Logger&) = delete;
 
     void log(LogLevel level, const std::string& mesaj);
     void afiseazaLoguri() const;

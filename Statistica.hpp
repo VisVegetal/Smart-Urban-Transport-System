@@ -25,17 +25,17 @@ public:
     }
 
     // media valorilor
-    double medie() const {
+    [[nodiscard]] double medie() const {
         if (valori.empty())
             return 0.0;
         return static_cast<double>(suma()) / valori.size();
     }
 
-    std::size_t dimensiune() const {
+    [[nodiscard]] std::size_t dimensiune() const {
         return valori.size();
     }
 
-    bool goala() const {
+    [[nodiscard]] bool goala() const {
         return valori.empty();
     }
 };

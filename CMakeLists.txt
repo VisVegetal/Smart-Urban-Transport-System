@@ -81,6 +81,7 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         Mentenanta.cpp
         Mentenanta.hpp
         Ruta.cpp
+        Incident.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
