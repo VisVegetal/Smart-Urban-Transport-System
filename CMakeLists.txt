@@ -80,6 +80,7 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         Ticketing.hpp
         Mentenanta.cpp
         Mentenanta.hpp
+        Ruta.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
