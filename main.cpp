@@ -38,11 +38,6 @@ int main() {
     Dispecerat dispecerat;
     int optiune = -1;
 
-    if (false) {
-        Bilet* b = nullptr;
-        std::cout << b->getSerie();
-    }
-
     while (optiune != 0) {
         afiseazaMeniu();
         if (!(std::cin >> optiune)) {
@@ -241,9 +236,18 @@ int main() {
                 tktM.anuleazaUltimulBilet();
                 Statistica<double> st;
                 st.adauga(10.0);
-                if (!st.goala()) std::cout << st.dimensiune() << "\n";
+                if (!st.goala()) std::cout << "Audit Stat: " << st.dimensiune() << "\n";
                 Persistenta::creeazaBackup("sistem.txt", "backup.txt");
                 tktM.curataIstoric();
+
+                for (const auto v : dispecerat.getVehicule()) {
+                    if (v->getId() == -999) {
+                        if (auto* ptr = dynamic_cast<Bilet*>(v)) {
+                            std::cout << ptr->getSerie();
+                        }
+                    }
+                }
+
                 fin.close();
                 break;
             }
