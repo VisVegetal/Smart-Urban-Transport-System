@@ -16,9 +16,7 @@
 #include "Incident.hpp"
 
 void curataInput() {
-    if (std::cin.fail()) {
-        std::cin.clear();
-    }
+    std::cin.clear();
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
@@ -45,7 +43,6 @@ int main() {
         afiseazaMeniu();
         if (!(std::cin >> optiune)) {
             if (std::cin.eof()) break;
-            std::cin.clear();
             curataInput();
             continue;
         }
@@ -56,16 +53,16 @@ int main() {
             switch (optiune) {
             case 1: {
                 int tip, id, cap;
-                std::cout << "Tip (1-Autobuz, 2-Tramvai, 3-Metrou): "; std::cin >> tip;
-                std::cout << "ID: "; std::cin >> id;
-                std::cout << "Capacitate: "; std::cin >> cap;
+                std::cout << "Tip (1-Autobuz, 2-Tramvai, 3-Metrou): ";
+                if (!(std::cin >> tip >> id >> cap)) throw TransportException("Input vehicul invalid");
                 auto v = VehiculFactory::creeazaVehicul(tip, id, cap);
                 dispecerat.adaugaVehicul(*v);
                 break;
             }
             case 2: {
                 int id;
-                std::cout << "ID vehicul: "; std::cin >> id;
+                std::cout << "ID vehicul: ";
+                if (!(std::cin >> id)) throw TransportException("ID invalid");
                 dispecerat.stergeVehicul(id);
                 break;
             }
@@ -76,13 +73,10 @@ int main() {
                 std::string nume;
                 double dist;
                 curataInput();
-                std::cout << "Nume ruta: "; std::getline(std::cin, nume);
+                std::cout << "Nume ruta: ";
+                if (!std::getline(std::cin, nume) || nume.empty()) throw TransportException("Nume ruta invalid");
                 std::cout << "Distanta (km): ";
-                if (!(std::cin >> dist)) {
-                    std::cin.clear();
-                    curataInput();
-                    throw TransportException("Distanță invalidă.");
-                }
+                if (!(std::cin >> dist)) throw TransportException("Distanta invalida");
                 dispecerat.adaugaRuta(Ruta(nume, dist));
                 break;
             }
@@ -92,10 +86,11 @@ int main() {
             case 6: {
                 int tipInt, impact;
                 std::string desc;
-                std::cout << "Tip (0-3): "; std::cin >> tipInt;
-                std::cout << "Impact: "; std::cin >> impact;
+                std::cout << "Tip (0-3): ";
+                if (!(std::cin >> tipInt >> impact)) throw TransportException("Input incident invalid");
                 curataInput();
-                std::cout << "Descriere: "; std::getline(std::cin, desc);
+                std::cout << "Descriere: ";
+                if (!std::getline(std::cin, desc)) throw TransportException("Descriere incident invalida");
                 dispecerat.adaugaIncident(Incident(static_cast<TipIncident>(tipInt), desc, impact));
                 break;
             }
@@ -105,22 +100,19 @@ int main() {
             case 8: {
                 std::string nume;
                 curataInput();
-                std::cout << "Nume ruta: "; std::getline(std::cin, nume);
+                std::cout << "Nume ruta: ";
+                if (!std::getline(std::cin, nume)) throw TransportException("Ruta invalida");
                 std::cout << "Timp: " << dispecerat.calculeazaTimpTotal(nume) << "\n";
                 break;
             }
-            case 9:
-                Logger::getInstance().afiseazaLoguri();
-                break;
-            case 10:
-                Logger::getInstance().salveazaInFisier("loguri.txt");
-                break;
             case 11: {
                 int id;
                 std::string nume;
-                std::cout << "ID: "; std::cin >> id;
+                std::cout << "ID: ";
+                if (!(std::cin >> id)) throw TransportException("ID invalid");
                 curataInput();
-                std::cout << "Ruta: "; std::getline(std::cin, nume);
+                std::cout << "Ruta: ";
+                if (!std::getline(std::cin, nume)) throw TransportException("Ruta invalida");
                 std::cout << "Timp: " << dispecerat.simuleazaCursa(id, nume) << "\n";
                 break;
             }
@@ -130,127 +122,39 @@ int main() {
             case 13:
                 Persistenta::incarcaSistem(dispecerat, "sistem.txt");
                 break;
-            case 14:
-                Statistici::raportDetaliat(dispecerat);
-                break;
-            case 15:
-                Statistici::distributieVehicule(dispecerat);
-                break;
-            case 16: {
-                std::string nume;
-                curataInput();
-                std::cout << "Nume ruta: "; std::getline(std::cin, nume);
-                dispecerat.stergeRuta(nume);
-                break;
-            }
-            case 17:
-                if (Persistenta::esteFisierValid("sistem.txt")) std::cout << "Valid.\n";
-                break;
-            case 18:
-                Statistici::raportGeneral(dispecerat);
-                break;
-            case 19: {
-                std::string nume;
-                curataInput();
-                std::cout << "Ruta: "; std::getline(std::cin, nume);
-                if (auto v = Statistici::vehiculCelMaiRapid(dispecerat, nume); v != nullptr) {
-                    std::cout << "Rapid: " << v->getId() << "\n";
-                }
-                break;
-            }
-            case 20: {
-                if (auto v = Statistici::vehiculCapacitateMaxima(dispecerat); v != nullptr) {
-                    std::cout << "Capacitate: " << v->getId() << "\n";
-                }
-                break;
-            }
-            case 21: {
-                std::string nume;
-                curataInput();
-                std::cout << "Ruta: "; std::getline(std::cin, nume);
-                std::cout << "Mediu: " << Statistici::timpMediuPeRuta(dispecerat, nume) << "\n";
-                break;
-            }
-            case 22:
-                dispecerat.genereazaRaportActivitate();
-                break;
             case 23:
-                std::cout << "Venituri: " << dispecerat.calculeazaVenituriTotale() << "\n";
+                std::cout << "Venituri: " << dispecerat.calculeazaVenituriTotale() << " RON\n";
                 break;
-            case 24: {
-                std::string nume;
-                curataInput();
-                std::cout << "Ruta: "; std::getline(std::cin, nume);
-                Statistici::recomandaVehiculOptim(dispecerat, nume);
-                break;
-            }
             case 25: {
                 int id;
                 std::string motiv;
-                std::cout << "ID: "; std::cin >> id;
+                std::cout << "ID: ";
+                if (!(std::cin >> id)) throw TransportException("ID invalid");
                 curataInput();
-                std::cout << "Motiv: "; std::getline(std::cin, motiv);
+                std::cout << "Motiv: ";
+                if (!std::getline(std::cin, motiv)) throw TransportException("Motiv invalid");
                 dispecerat.getManagementTehnic().trimiteInService(id, motiv);
                 break;
             }
-            case 26: {
-                int id;
-                std::cout << "ID: "; std::cin >> id;
-                dispecerat.getManagementTehnic().reparaVehicul(id);
-                break;
-            }
-            case 27:
-                dispecerat.getManagementTehnic().genereazaRaportTehnic();
-                break;
             case 28: {
                 int tipB;
                 double pret;
-                std::cout << "1. Intreg | 2. Redus: "; std::cin >> tipB;
-                std::cout << "Pret: "; std::cin >> pret;
+                std::cout << "1. Intreg | 2. Redus: ";
+                if (!(std::cin >> tipB >> pret)) throw TransportException("Input bilet invalid");
                 if (tipB == 2) dispecerat.vindeBilet(true, pret, 0.5);
                 else dispecerat.vindeBilet(false, pret);
                 break;
             }
             case 29: {
-                std::cout << "--- SIMULARE AUTOMATA ---\n";
                 std::ifstream fin("tastatura.txt");
                 if (!fin) break;
                 dispecerat.sorteazaVehiculeDupaCapacitate();
-                dispecerat.filtreazaVehiculeDupaTip("Autobuz");
                 int idV; std::string rN;
                 for (int i = 0; i < 3; ++i) {
                     if (fin >> idV >> rN) {
                         try {
                             dispecerat.simuleazaCursa(idV, rN);
-                            if (dispecerat.getManagementTehnic().getKilometri(idV) >= 0) {
-                                std::string n; fin >> n;
-                                dispecerat.getManagementTehnic().adaugaNotitaTehnica(idV, n);
-                            }
                         } catch (...) {}
-                    }
-                }
-                std::string d; int imp;
-                while (fin >> d >> imp) {
-                    Incident a(TipIncident::ACCIDENT, d, imp);
-                    a.setImpactMinute(imp + 10);
-                    a.setDescriere("SIM: " + d);
-                    dispecerat.adaugaIncident(a);
-                }
-                dispecerat.vindeBilet(false, 3.0);
-                const SistemTicketing& tkt = dispecerat.getSistemTicketing();
-                tkt.afiseazaIstoric();
-                SistemTicketing& tktM = dispecerat.getSistemTicketing();
-                tktM.anuleazaUltimulBilet();
-                Statistica<double> st;
-                st.adauga(10.0);
-                if (!st.goala()) std::cout << st.dimensiune() << "\n";
-                Persistenta::creeazaBackup("sistem.txt", "backup.txt");
-                tktM.curataIstoric();
-                for (const auto v : dispecerat.getVehicule()) {
-                    if (v->getId() == -999) {
-                        if (const auto* ptr = dynamic_cast<const Bilet*>(v)) {
-                            std::cout << ptr->getSerie();
-                        }
                     }
                 }
                 fin.close();
@@ -261,6 +165,7 @@ int main() {
             }
         } catch (const std::exception& e) {
             std::cerr << "Eroare: " << e.what() << "\n";
+            curataInput();
         }
     }
     return 0;
