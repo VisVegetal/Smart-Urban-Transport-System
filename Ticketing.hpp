@@ -14,6 +14,8 @@ private:
 public:
     SistemTicketing();
     ~SistemTicketing() = default;
+    SistemTicketing(const SistemTicketing& other);
+    SistemTicketing& operator=(const SistemTicketing& other);
 
     void emiteBiletIntreg(double pret);
     void emiteBiletRedus(double pret, double reducere);

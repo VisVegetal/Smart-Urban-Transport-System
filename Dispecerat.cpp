@@ -24,23 +24,22 @@ Dispecerat::Dispecerat(const Dispecerat& other) {
     }
     rute = other.rute;
     incidente = other.incidente;
+    managementTehnic = other.managementTehnic;
+    sistemTicketing = other.sistemTicketing;
 }
 
 Dispecerat& Dispecerat::operator=(const Dispecerat& other) {
     if (this != &other) {
         elibereazaMemorie();
-
         for (const auto v : other.vehicule) {
             this->vehicule.push_back(v->clone());
         }
-
         this->rute = other.rute;
         this->incidente = other.incidente;
-
         this->managementTehnic = other.managementTehnic;
         this->sistemTicketing = other.sistemTicketing;
     }
-    Logger::getInstance().log(LogLevel::INFO, "Dispecerat copiat prin operatorul de atribuire.");
+    Logger::getInstance().log(LogLevel::INFO, "Dispecerat copiat.");
     return *this;
 }
 
@@ -62,7 +61,6 @@ void Dispecerat::stergeVehicul(int id) {
     auto it = std::ranges::find_if(vehicule, [id](const Vehicul* v) {
         return v->getId() == id;
     });
-
     if (it != vehicule.end()) {
         delete *it;
         vehicule.erase(it);
@@ -123,7 +121,6 @@ void Dispecerat::stergeRuta(const std::string& nume) {
     auto it = std::ranges::find_if(rute, [&nume](const Ruta& r) {
         return r.getNume() == nume;
     });
-
     if (it != rute.end()) {
         rute.erase(it);
     } else {
@@ -162,19 +159,14 @@ double Dispecerat::simuleazaCursa(int idVehicul, const std::string& numeRuta) {
     if (!managementTehnic.poateRula(idVehicul)) {
         throw TransportException("Vehiculul este in service!");
     }
-
     const Ruta* ruta = gasesteRuta(numeRuta);
     if (!ruta) throw RutaException("Ruta nu a fost gasita.");
-
     auto it = std::ranges::find_if(vehicule, [idVehicul](const Vehicul* v) {
         return v->getId() == idVehicul;
     });
-
     if (it == vehicule.end()) throw VehiculException("Vehicul inexistent.");
-
     double timp = (*it)->calculeazaTimp(*ruta);
     timp += (calculeazaImpactTotal() / 60.0);
-
     managementTehnic.actualizeazaKilometraj(idVehicul, static_cast<int>(ruta->getDistanta()));
     return timp;
 }
@@ -182,7 +174,6 @@ double Dispecerat::simuleazaCursa(int idVehicul, const std::string& numeRuta) {
 double Dispecerat::calculeazaTimpTotal(const std::string& numeRuta) const {
     const Ruta* ruta = gasesteRuta(numeRuta);
     if (!ruta) throw RutaException("Ruta nu exista.");
-
     double timpMinim = 999999.0;
     for (const auto v : vehicule) {
         double t = v->calculeazaTimp(*ruta);

@@ -3,6 +3,31 @@
 
 SistemTicketing::SistemTicketing() : venitTotal(0.0), contorSerie(1000) {}
 
+SistemTicketing::SistemTicketing(const SistemTicketing& other) {
+    this->venitTotal = other.venitTotal;
+    this->contorSerie = other.contorSerie;
+    this->bileteVandute.clear();
+    for (const auto& b : other.bileteVandute) {
+        if (b) {
+            this->bileteVandute.push_back(std::unique_ptr<Bilet>(b->clone()));
+        }
+    }
+}
+
+SistemTicketing& SistemTicketing::operator=(const SistemTicketing& other) {
+    if (this != &other) {
+        this->venitTotal = other.venitTotal;
+        this->contorSerie = other.contorSerie;
+        this->bileteVandute.clear();
+        for (const auto& b : other.bileteVandute) {
+            if (b) {
+                this->bileteVandute.push_back(std::unique_ptr<Bilet>(b->clone()));
+            }
+        }
+    }
+    return *this;
+}
+
 void SistemTicketing::emiteBiletIntreg(double pret) {
     std::string serie = "INT-" + std::to_string(++contorSerie);
     bileteVandute.push_back(std::make_unique<BiletIntreg>(pret, serie));
