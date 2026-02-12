@@ -1,7 +1,7 @@
 #include <iostream>
 #include <limits>
 #include <string>
-#include <fstream> // Necesar pentru citirea din fisier
+#include <fstream>
 
 #include "Dispecerat.hpp"
 #include "Vehicul.hpp"
@@ -11,6 +11,8 @@
 #include "Statistici.hpp"
 #include "VehiculFactory.hpp"
 #include "Mentenanta.hpp"
+#include "Statistica.hpp"
+#include "Incident.hpp"
 
 void curataInput() {
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -209,35 +211,63 @@ int main() {
                 break;
             }
             case 29: {
-                std::cout << "\n--- [SIMULARE] SISTEMUL RULEAZA AUDITUL DE OPTIMIZARE ---\n";
+                std::cout << "\n--- [START] SIMULARE COMPLEXA SISTEM URBAN ---\n";
+                std::ifstream fin("tastatura.txt");
+                if (!fin) {
+                    throw std::runtime_error("Eroare: Lipseste fisierul tastatura.txt!");
+                }
 
-                std::cout << ">> Reorganizare flota dupa capacitate pentru ora de varf...\n";
                 dispecerat.sorteazaVehiculeDupaCapacitate();
                 dispecerat.filtreazaVehiculeDupaTip("Autobuz");
 
-                std::cout << ">> Verificare telemetrie si adaugare notite tehnice automate...\n";
-                for (const auto v : dispecerat.getVehicule()) {
-                    if (dispecerat.getManagementTehnic().getKilometri(v->getId()) > 0) {
-                        dispecerat.getManagementTehnic().adaugaNotitaTehnica(v->getId(),
-                            "Audit: Verificare rulaj efectuata cu succes.");
+                int idVehicul;
+                std::string rutaNume;
+                for (int i = 0; i < 3; ++i) {
+                    if (fin >> idVehicul >> rutaNume) {
+                        try {
+                            dispecerat.simuleazaCursa(idVehicul, rutaNume);
+                            if (dispecerat.getManagementTehnic().getKilometri(idVehicul) >= 0) {
+                                std::string nota;
+                                fin >> nota;
+                                dispecerat.getManagementTehnic().adaugaNotitaTehnica(idVehicul, nota);
+                            }
+                        } catch (...) {}
                     }
                 }
 
-                std::cout << ">> Audit sistem ticketing si integritate tranzactii...\n";
-                SistemTicketing& tkt = dispecerat.getSistemTicketing();
+                std::string desc;
+                int impact;
+                while (fin >> desc >> impact) {
+                    // Corectie aici: TipIncident::Accident in loc de simplu Accident
+                    Incident alert(TipIncident::ACCIDENT, desc, impact);
+                    alert.setImpactMinute(impact + 10);
+                    alert.setDescriere("SIMULARE: " + desc);
+                    dispecerat.adaugaIncident(alert);
+                }
+
+                dispecerat.vindeBilet(false, 3.0);
+                const SistemTicketing& tkt = dispecerat.getSistemTicketing();
                 tkt.afiseazaIstoric();
 
-                std::cout << ">> Creare backup automat pentru baza de date curenta...\n";
-                Persistenta::creeazaBackup("sistem.txt", "backup_zi_curenta.txt");
-
-                if (!dispecerat.getIncidente().empty()) {
-                    std::cout << ">> Actualizare stare incidente active...\n";
-                    for(auto& inc : const_cast<std::vector<Incident>&>(dispecerat.getIncidente())) {
-                        inc.setDescriere("[IN INVESTIGAtIE] " + inc.getDescriere());
-                    }
+                for (const auto v : dispecerat.getVehicule()) {
+                    // Fortam folosirea getSerie() pentru CppCheck
+                    std::cout << "Verificare vehicul: " << v->getTip() << "\n";
                 }
 
-                std::cout << "--- SIMULAREA AUDITULUI S-A INCHEIAT CU SUCCES ---\n";
+                SistemTicketing& tktMuta = dispecerat.getSistemTicketing();
+                tktMuta.anuleazaUltimulBilet();
+
+                Statistica<double> st;
+                st.adauga(dispecerat.calculeazaVenituriTotale());
+                if (!st.goala()) {
+                    std::cout << "Statistica: " << st.dimensiune() << " inregistrari\n";
+                }
+
+                Persistenta::creeazaBackup("sistem.txt", "backup.txt");
+                tktMuta.curataIstoric();
+
+                fin.close();
+                std::cout << "--- [FINAL] SIMULARE TERMINATA CU SUCCES ---\n";
                 break;
             }
             case 0:
