@@ -200,7 +200,7 @@ int main() {
                 break;
             }
             case 29: {
-                std::ifstream fin("tastatura.txt");
+                std::ifstream fin("input.txt");
                 if (!fin) break;
                 dispecerat.sorteazaVehiculeDupaCapacitate();
                 dispecerat.filtreazaVehiculeDupaTip("Autobuz");
