@@ -12,7 +12,7 @@ public:
     Ruta() : distanta(0.0) {}
     Ruta(std::string nume, double distanta);
 
-    [[nodiscard]] std::string getNume() const { return nume; }
+    [[nodiscard]] const std::string getNume() const { return nume; }
     [[nodiscard]] double getDistanta() const { return distanta; }
 };
 

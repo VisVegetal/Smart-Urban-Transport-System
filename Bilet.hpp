@@ -17,7 +17,7 @@ public:
 
     [[nodiscard]] virtual double getPretFinal() const = 0;
     [[nodiscard]] virtual std::string getDetalii() const;
-    [[nodiscard]] std::string getSerie() const;
+    [[nodiscard]] const std::string getSerie() const;
 };
 
 class BiletIntreg : public Bilet {

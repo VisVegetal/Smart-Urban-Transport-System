@@ -1,6 +1,7 @@
 #include <iostream>
 #include <limits>
 #include <string>
+#include <fstream> // Necesar pentru citirea din fisier
 
 #include "Dispecerat.hpp"
 #include "Vehicul.hpp"
@@ -26,7 +27,7 @@ void afiseazaMeniu() {
     std::cout << "19. Cel mai rapid vehicul | 20. Capacitate Maxima | 21. Timp Mediu Ruta\n";
     std::cout << "22. Raport General | 23. Venituri Totale | 24. Recomandare Smart\n";
     std::cout << "25. Trimite in Service | 26. Repara Vehicul | 27. Raport Tehnic\n";
-    std::cout << "28. Vinde Bilet | 0. Iesire\n";
+    std::cout << "28. Vinde Bilet | 29. Simulare Automata (Fisier) | 0. Iesire\n"; // Adaugat 29
     std::cout << "Optiunea ta: ";
 }
 
@@ -152,12 +153,12 @@ int main() {
                 break;
             }
             case 20: {
-            if (auto v = Statistici::vehiculCapacitateMaxima(dispecerat); v != nullptr) {
-                std::cout << "Capacitate maxima: " << v->getTip() << " (ID " << v->getId() << ")\n";
-            } else {
-                std::cout << "Nu exista vehicule in flota.\n";
-            }
-            break;
+                if (auto v = Statistici::vehiculCapacitateMaxima(dispecerat); v != nullptr) {
+                    std::cout << "Capacitate maxima: " << v->getTip() << " (ID " << v->getId() << ")\n";
+                } else {
+                    std::cout << "Nu exista vehicule in flota.\n";
+                }
+                break;
             }
             case 21: {
                 std::string nume;
@@ -205,6 +206,38 @@ int main() {
                 if (tipB == 2) dispecerat.vindeBilet(true, pret, 0.5);
                 else dispecerat.vindeBilet(false, pret);
                 std::cout << "Bilet emis.\n";
+                break;
+            }
+            case 29: {
+                std::cout << "\n--- [SIMULARE] SISTEMUL RULEAZA AUDITUL DE OPTIMIZARE ---\n";
+
+                std::cout << ">> Reorganizare flota dupa capacitate pentru ora de varf...\n";
+                dispecerat.sorteazaVehiculeDupaCapacitate();
+                dispecerat.filtreazaVehiculeDupaTip("Autobuz");
+
+                std::cout << ">> Verificare telemetrie si adaugare notite tehnice automate...\n";
+                for (const auto v : dispecerat.getVehicule()) {
+                    if (dispecerat.getManagementTehnic().getKilometri(v->getId()) > 0) {
+                        dispecerat.getManagementTehnic().adaugaNotitaTehnica(v->getId(),
+                            "Audit: Verificare rulaj efectuata cu succes.");
+                    }
+                }
+
+                std::cout << ">> Audit sistem ticketing si integritate tranzactii...\n";
+                SistemTicketing& tkt = dispecerat.getSistemTicketing();
+                tkt.afiseazaIstoric();
+
+                std::cout << ">> Creare backup automat pentru baza de date curenta...\n";
+                Persistenta::creeazaBackup("sistem.txt", "backup_zi_curenta.txt");
+
+                if (!dispecerat.getIncidente().empty()) {
+                    std::cout << ">> Actualizare stare incidente active...\n";
+                    for(auto& inc : const_cast<std::vector<Incident>&>(dispecerat.getIncidente())) {
+                        inc.setDescriere("[IN INVESTIGAtIE] " + inc.getDescriere());
+                    }
+                }
+
+                std::cout << "--- SIMULAREA AUDITULUI S-A INCHEIAT CU SUCCES ---\n";
                 break;
             }
             case 0:
