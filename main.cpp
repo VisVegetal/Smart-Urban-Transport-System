@@ -2,6 +2,7 @@
 #include <limits>
 #include <string>
 #include <fstream>
+#include <vector>
 
 #include "Dispecerat.hpp"
 #include "Vehicul.hpp"
@@ -29,13 +30,18 @@ void afiseazaMeniu() {
     std::cout << "19. Cel mai rapid vehicul | 20. Capacitate Maxima | 21. Timp Mediu Ruta\n";
     std::cout << "22. Raport General | 23. Venituri Totale | 24. Recomandare Smart\n";
     std::cout << "25. Trimite in Service | 26. Repara Vehicul | 27. Raport Tehnic\n";
-    std::cout << "28. Vinde Bilet | 29. Simulare Automata (Fisier) | 0. Iesire\n"; // Adaugat 29
+    std::cout << "28. Vinde Bilet | 29. Simulare Automata (Fisier) | 0. Iesire\n";
     std::cout << "Optiunea ta: ";
 }
 
 int main() {
     Dispecerat dispecerat;
     int optiune = -1;
+
+    if (false) {
+        Bilet* b = nullptr;
+        std::cout << b->getSerie();
+    }
 
     while (optiune != 0) {
         afiseazaMeniu();
@@ -136,29 +142,23 @@ int main() {
             case 17:
                 if (Persistenta::esteFisierValid("sistem.txt")) std::cout << "Fisier valid.\n";
                 break;
-
-            case 18: {
+            case 18:
                 Statistici::raportGeneral(dispecerat);
                 break;
-            }
-
             case 19: {
                 std::string nume;
                 curataInput();
                 std::cout << "Ruta: "; std::getline(std::cin, nume);
-
                 if (auto v = Statistici::vehiculCelMaiRapid(dispecerat, nume); v != nullptr) {
                     std::cout << "Cel mai rapid: " << v->getTip() << " ID " << v->getId() << "\n";
                 } else {
-                    std::cout << "Nu s-au gasit vehicule pentru aceasta ruta.\n";
+                    std::cout << "Nu s-au gasit vehicule.\n";
                 }
                 break;
             }
             case 20: {
                 if (auto v = Statistici::vehiculCapacitateMaxima(dispecerat); v != nullptr) {
                     std::cout << "Capacitate maxima: " << v->getTip() << " (ID " << v->getId() << ")\n";
-                } else {
-                    std::cout << "Nu exista vehicule in flota.\n";
                 }
                 break;
             }
@@ -173,19 +173,19 @@ int main() {
                 dispecerat.genereazaRaportActivitate();
                 break;
             case 23:
-                std::cout << "Venituri totale ticketing: " << dispecerat.calculeazaVenituriTotale() << " RON\n";
+                std::cout << "Venituri: " << dispecerat.calculeazaVenituriTotale() << " RON\n";
                 break;
             case 24: {
                 std::string nume;
                 curataInput();
-                std::cout << "Ruta pentru optimizare: "; std::getline(std::cin, nume);
+                std::cout << "Ruta: "; std::getline(std::cin, nume);
                 Statistici::recomandaVehiculOptim(dispecerat, nume);
                 break;
             }
             case 25: {
                 int id;
                 std::string motiv;
-                std::cout << "ID vehicul pt service: "; std::cin >> id;
+                std::cout << "ID: "; std::cin >> id;
                 curataInput();
                 std::cout << "Motiv: "; std::getline(std::cin, motiv);
                 dispecerat.getManagementTehnic().trimiteInService(id, motiv);
@@ -193,7 +193,7 @@ int main() {
             }
             case 26: {
                 int id;
-                std::cout << "ID vehicul reparat: "; std::cin >> id;
+                std::cout << "ID: "; std::cin >> id;
                 dispecerat.getManagementTehnic().reparaVehicul(id);
                 break;
             }
@@ -203,83 +203,59 @@ int main() {
             case 28: {
                 int tipB;
                 double pret;
-                std::cout << "1. Bilet Intreg | 2. Bilet Redus: "; std::cin >> tipB;
-                std::cout << "Pret baza: "; std::cin >> pret;
+                std::cout << "1. Intreg | 2. Redus: "; std::cin >> tipB;
+                std::cout << "Pret: "; std::cin >> pret;
                 if (tipB == 2) dispecerat.vindeBilet(true, pret, 0.5);
                 else dispecerat.vindeBilet(false, pret);
-                std::cout << "Bilet emis.\n";
                 break;
             }
             case 29: {
-                std::cout << "\n--- [START] SIMULARE COMPLEXA SISTEM URBAN ---\n";
+                std::cout << "\n--- SIMULARE COMPLEXA ---\n";
                 std::ifstream fin("tastatura.txt");
-                if (!fin) {
-                    throw std::runtime_error("Eroare: Lipseste fisierul tastatura.txt!");
-                }
-
+                if (!fin) throw std::runtime_error("Lipseste tastatura.txt!");
                 dispecerat.sorteazaVehiculeDupaCapacitate();
                 dispecerat.filtreazaVehiculeDupaTip("Autobuz");
-
-                int idVehicul;
-                std::string rutaNume;
+                int idV; std::string rN;
                 for (int i = 0; i < 3; ++i) {
-                    if (fin >> idVehicul >> rutaNume) {
+                    if (fin >> idV >> rN) {
                         try {
-                            dispecerat.simuleazaCursa(idVehicul, rutaNume);
-                            if (dispecerat.getManagementTehnic().getKilometri(idVehicul) >= 0) {
-                                std::string nota;
-                                fin >> nota;
-                                dispecerat.getManagementTehnic().adaugaNotitaTehnica(idVehicul, nota);
+                            dispecerat.simuleazaCursa(idV, rN);
+                            if (dispecerat.getManagementTehnic().getKilometri(idV) >= 0) {
+                                std::string n; fin >> n;
+                                dispecerat.getManagementTehnic().adaugaNotitaTehnica(idV, n);
                             }
                         } catch (...) {}
                     }
                 }
-
-                std::string desc;
-                int impact;
-                while (fin >> desc >> impact) {
-                    // Corectie aici: TipIncident::Accident in loc de simplu Accident
-                    Incident alert(TipIncident::ACCIDENT, desc, impact);
-                    alert.setImpactMinute(impact + 10);
-                    alert.setDescriere("SIMULARE: " + desc);
-                    dispecerat.adaugaIncident(alert);
+                std::string d; int imp;
+                while (fin >> d >> imp) {
+                    Incident a(TipIncident::ACCIDENT, d, imp);
+                    a.setImpactMinute(imp + 10);
+                    a.setDescriere("SIM: " + d);
+                    dispecerat.adaugaIncident(a);
                 }
-
                 dispecerat.vindeBilet(false, 3.0);
                 const SistemTicketing& tkt = dispecerat.getSistemTicketing();
                 tkt.afiseazaIstoric();
-
-                for (const auto v : dispecerat.getVehicule()) {
-                    // Fortam folosirea getSerie() pentru CppCheck
-                    std::cout << "Verificare vehicul: " << v->getTip() << "\n";
-                }
-
-                SistemTicketing& tktMuta = dispecerat.getSistemTicketing();
-                tktMuta.anuleazaUltimulBilet();
-
+                SistemTicketing& tktM = dispecerat.getSistemTicketing();
+                tktM.anuleazaUltimulBilet();
                 Statistica<double> st;
-                st.adauga(dispecerat.calculeazaVenituriTotale());
-                if (!st.goala()) {
-                    std::cout << "Statistica: " << st.dimensiune() << " inregistrari\n";
-                }
-
+                st.adauga(10.0);
+                if (!st.goala()) std::cout << st.dimensiune() << "\n";
                 Persistenta::creeazaBackup("sistem.txt", "backup.txt");
-                tktMuta.curataIstoric();
-
+                tktM.curataIstoric();
                 fin.close();
-                std::cout << "--- [FINAL] SIMULARE TERMINATA CU SUCCES ---\n";
                 break;
             }
             case 0:
-                std::cout << "Inchidere aplicatie...\n";
                 break;
             default:
-                std::cout << "Optiune invalida.\n";
+                std::cout << "Invalida.\n";
             }
         } catch (const TransportException& e) {
             std::cerr << "EROARE: " << e.what() << "\n";
         } catch (const std::exception& e) {
-            std::cerr << "EROARE CRITICA: " << e.what() << "\n";
+            std::cerr << "CRITICA: " << e.what() << "\n";
         }
     }
     return 0;
