@@ -1,16 +1,111 @@
-1 1 101 50
-1 2 201 80
-1 3 301 300
-4 Linia_1 12.5
-4 Linia_2 8.0
-28 1 3.0
-28 2 3.0
-6 3 15 Accident usor intersectie
-11 101 Linia_1
-25 101 Revizie necesara
-27
-22
+1 301 65
+1 302 45
+1 303 55
+1 304 60
+1 305 40
+1 306 70
+1 307 50
+1 308 55
+1 309 60
+1 310 45
+2 401 120
+2 402 150
+2 403 130
+2 404 110
+2 405 140
+2 406 160
+2 407 100
+2 408 125
+2 409 135
+2 410 115
+4
+Traseu Central A
+12.5
+4
+Traseu Central B
+10.8
+4
+Linia 102 Metro
+25.4
+4
+Linia 300 Business
+18.2
+4
+Traseu Periferie
+35.6
+4
+Linia de Noapte 1
+42.0
+4
+Linia de Noapte 2
+38.5
+4
+Traseu Turistic
+15.0
+4
+Linia Scolara 1
+8.2
+4
+Linia Scolara 2
+7.5
+28 1 3.5
+28 1 3.5
+28 2 5.0
+28 2 5.0
+28 1 3.5
+28 1 3.5
+28 1 3.5
+28 2 5.0
+28 2 5.0
+28 1 3.5
+28 1 3.5
+28 1 3.5
+28 2 5.0
+28 2 5.0
+28 1 3.5
+28 1 3.5
+28 1 3.5
+28 2 5.0
+28 2 5.0
+28 1 3.5
+6 1 20 Blocaj trafic Piata Unirii
+6 2 15 Pană curent sector 3
+6 1 45 Accident usor intersectie
+6 2 10 Defectiune macaz
+6 1 30 Manifestatie stradala
+6 2 25 Lucrari carosabil
+6 1 12 Obiect abandonat
+6 2 50 Defectiune tehnica tramvai 402
+6 1 18 Intarziere flux calatori
+6 2 22 Problema alimentare retea
+25 301 Motor supraincalzit
+25 305 Schimb ulei necesar
+25 402 Verificare frane tramvai
+25 408 Revizie anuala
+25 310 Inspectie ITP
+26 301
+26 305
+26 402
+19
+Traseu Central A
+19
+Linia 102 Metro
+20
+21
+Traseu Central B
+21
+Traseu Periferie
 23
+24
+Linia 300 Business
+24
+Traseu Turistic
+22
+14
+15
+18
+27
 12
+17
 29
 0
