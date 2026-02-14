@@ -29,7 +29,6 @@ void populeazaDateTest(Dispecerat& d) {
         d.adaugaVehicul(*VehiculFactory::creeazaVehicul(1, 101, 50));
         d.adaugaVehicul(*VehiculFactory::creeazaVehicul(2, 202, 100));
         d.adaugaRuta(Ruta("Traseu Test", 10.5));
-
         d.vindeBilet(false, 5.0);
     } catch (...) {}
 }
@@ -45,7 +44,7 @@ void afiseazaMeniu() {
     std::cout << "19. Cel mai rapid vehicul | 20. Capacitate Maxima | 21. Timp Mediu Ruta\n";
     std::cout << "22. Raport General | 23. Venituri Totale | 24. Recomandare Smart\n";
     std::cout << "25. Trimite in Service | 26. Repara Vehicul | 27. Raport Tehnic\n";
-    std::cout << "28. Vinde Bilet | 29. Audit Complet (Tema 3) | 0. Iesire\n";
+    std::cout << "28. Vinde Bilet | 29. Audit Complet | 0. Iesire\n";
     std::cout << "Optiunea ta: ";
 }
 
@@ -216,26 +215,24 @@ int main() {
                 break;
             }
             case 29: {
-                std::cout << "\n--- AUDIT TEHNIC COMPLET ---\n";
+                std::cout << "\n--- AUDIT TEHNIC COMPLET (TEMA 3) ---\n";
 
-                std::cout << "Autobuze in flota: " << dispecerat.numaraVehiculeDeTip<Autobuz>() << "\n";
+                std::cout << "Autobuze detectate: " << dispecerat.numaraVehiculeDeTip<Autobuz>() << "\n";
 
                 for (const auto* v : dispecerat.getVehicule()) {
                     if (verificaTip<Autobuz>(v)) {
-                        std::cout << "Vehicul ID " << v->getId() << "\n";
+                        std::cout << "Validare polimorfica: ID " << v->getId() << "\n";
                     }
-                    
-                    const auto* b = dynamic_cast<const Bilet*>(v);
-                    if (b) {
-                        std::cout << "Serie bilet gasita in sistem: " << b->getSerie() << "\n";
+                    if (const auto* b = dynamic_cast<const Bilet*>(v)) {
+                        std::cout << "Audit serie bilet: " << b->getSerie() << "\n";
                     }
                 }
 
-                Statistica<int> stAudit("Audit");
+                Statistica<double> stAudit("Audit");
                 if (stAudit.goala()) {
-                    stAudit.adauga(100);
+                    stAudit.adauga(10.0);
                 }
-                std::cout << "Elemente statistice: " << stAudit.dimensiune() << "\n";
+                std::cout << "Dimensiune colectie statistica: " << stAudit.dimensiune() << "\n";
 
                 dispecerat.sorteazaVehiculeDupaCapacitate();
                 dispecerat.filtreazaVehiculeDupaTip("Autobuz");
@@ -247,7 +244,7 @@ int main() {
 
                 Incident auditInc(TipIncident::ACCIDENT, "Audit", 0);
                 auditInc.setImpactMinute(10);
-                auditInc.setDescriere("Audit");
+                auditInc.setDescriere("Audit manual");
                 Persistenta::creeazaBackup("sistem.txt", "backup.txt");
 
                 afiseazaAuditGeneric(dispecerat);
