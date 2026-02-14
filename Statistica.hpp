@@ -46,7 +46,7 @@ public:
 };
 
 template <typename T>
-void afiseazaAuditGeneric([[maybe_unused]]const T& obj) {
+void afiseazaAuditGeneric([[maybe_unused]] const T& obj) {
     std::cout << "[AUDIT TEMPLATE] Obiectul ocupa " << sizeof(obj) << " bytes in memorie.\n";
 }
 

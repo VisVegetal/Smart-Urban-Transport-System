@@ -52,7 +52,9 @@ int main() {
         std::cout << "28. Vinde Bilet | 29. Audit Complet | 0. Iesire\n";
         std::cout << "Optiunea ta: ";
 
-        if (!(std::cin >> inputUtilizator)) break;
+        if (!(std::cin >> inputUtilizator)) {
+            break;
+        }
 
         int optiune;
         try {
@@ -219,6 +221,7 @@ int main() {
                 dispecerat.getManagementTehnic().adaugaNotitaTehnica(101, "Audit");
                 Statistica<double> stAudit("Audit");
                 if (stAudit.goala()) stAudit.adauga(static_cast<double>(km));
+                std::cout << "Dim: " << stAudit.dimensiune() << "\n";
                 dispecerat.sorteazaVehiculeDupaCapacitate();
                 dispecerat.filtreazaVehiculeDupaTip("Autobuz");
                 SistemTicketing& tkt = dispecerat.getSistemTicketing();
