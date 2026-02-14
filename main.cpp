@@ -6,7 +6,6 @@
 
 #include "Dispecerat.hpp"
 #include "Vehicul.hpp"
-#include "Exceptii.hpp"
 #include "Logger.hpp"
 #include "Persistenta.hpp"
 #include "Statistici.hpp"
@@ -15,9 +14,22 @@
 #include "Statistica.hpp"
 #include "Incident.hpp"
 
+template <typename T, typename V>
+bool verificaTip(V* vehicul) {
+    return dynamic_cast<T*>(vehicul) != nullptr;
+}
+
 void curataInput() {
     std::cin.clear();
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
+void populeazaDateTest(Dispecerat& d) {
+    try {
+        d.adaugaVehicul(*VehiculFactory::creeazaVehicul(1, 101, 50));
+        d.adaugaVehicul(*VehiculFactory::creeazaVehicul(2, 202, 100));
+        d.adaugaRuta(Ruta("Traseu Test", 10.5));
+    } catch (...) {}
 }
 
 void afiseazaMeniu() {
@@ -37,13 +49,16 @@ void afiseazaMeniu() {
 
 int main() {
     Dispecerat dispecerat;
+    populeazaDateTest(dispecerat);
     int optiune = -1;
 
     while (true) {
         afiseazaMeniu();
-
         if (!(std::cin >> optiune)) {
-            break;
+            if (std::cin.eof()) break;
+            curataInput();
+            if (std::cin.fail()) break;
+            continue;
         }
 
         if (optiune == 0) break;
@@ -199,29 +214,42 @@ int main() {
                 break;
             }
             case 29: {
-                dispecerat.filtreazaVehiculeDupaTip("Autobuz");
-                dispecerat.sorteazaVehiculeDupaCapacitate();
-                Incident auditInc(TipIncident::ACCIDENT, "Audit", 5);
-                auditInc.setImpactMinute(10);
-                auditInc.setDescriere("Audit descriere");
-                dispecerat.getManagementTehnic().adaugaNotitaTehnica(1, "Nota");
-                if (dispecerat.getManagementTehnic().getKilometri(1) < 0) std::cout << "Audit\n";
-                SistemTicketing& tkt = dispecerat.getSistemTicketing();
-                tkt.afiseazaIstoric();
-                tkt.anuleazaUltimulBilet();
-                tkt.curataIstoric();
-                Statistica<double> st;
-                st.adauga(1.0);
-                if(!st.goala()) std::cout << st.dimensiune() << "\n";
-                Persistenta::creeazaBackup("sistem.txt", "backup.txt");
-                for (const auto v : dispecerat.getVehicule()) {
-                    if (v->getId() == -999) {
-                        if (const auto* ptr = dynamic_cast<const Bilet*>(v)) {
-                            std::cout << ptr->getSerie();
-                        }
-                    }
-                }
-                break;
+            std::cout << "\n==========\n";
+            std::cout << "   AUDIT  \n";
+            std::cout << "============\n";
+
+            Statistica<int> stCapacitate("Capacitate Locuri");
+            for (auto v : dispecerat.getVehicule()) {
+                stCapacitate.adauga(v->getCapacitate());
+            }
+
+            Statistica<double> stDistante("Lungime Rute (km)");
+            for (const auto& r : dispecerat.getRute()) {
+                stDistante.adauga(r.getDistanta());
+            }
+
+            int autobuze = dispecerat.numaraVehiculeDeTip<Autobuz>();
+            int tramvaie = dispecerat.numaraVehiculeDeTip<Tramvai>();
+
+            std::cout << "[FLOTA]\n";
+            std::cout << " -> Autobuze: " << autobuze << " | Tramvaie: " << tramvaie << "\n";
+            if (!stCapacitate.goala()) {
+                std::cout << " -> Locuri totale medii: " << stCapacitate.medie() << "\n";
+            }
+
+            std::cout << "\n[INFRASTRUCTURA]\n";
+            if (!stDistante.goala()) {
+                std::cout << " -> " << stDistante << "\n";
+                std::cout << " -> Distanta medie traseu: " << stDistante.medie() << " km\n";
+            }
+
+            std::cout << "\n[DIAGNOSTIC]\n";
+            afiseazaAuditGeneric(dispecerat);
+
+            Logger::getInstance().log(LogLevel::INFO, "Audit finalizat.");
+
+            std::cout << "==========================================\n";
+            break;
             }
             default:
                 break;

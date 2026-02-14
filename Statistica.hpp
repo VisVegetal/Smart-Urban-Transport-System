@@ -3,41 +3,51 @@
 
 #include <vector>
 #include <numeric>
-#include <cstddef>
+#include <string>
+#include <iostream>
 
-// clasa template generica pentru calcule statistice
 template <typename T>
 class Statistica {
 private:
-    std::vector<T> valori; // atribut dependent de T
+    std::vector<T> date;
+    std::string numeUnitate;
 
 public:
-    Statistica() = default;
+    Statistica() : numeUnitate("Generica") {}
+    explicit Statistica(std::string unitate) : numeUnitate(std::move(unitate)) {}
 
-    // adauga o valoare
-    void adauga(const T& v) {
-        valori.push_back(v);
+    void adauga(T valoare) {
+        date.push_back(valoare);
     }
 
-    // suma valorilor
-    T suma() const {
-        return std::accumulate(valori.begin(), valori.end(), T{});
+    T calculeazaMedia() const {
+        if (date.empty()) return T{};
+        T suma = std::accumulate(date.begin(), date.end(), T{});
+        return suma / static_cast<T>(date.size());
     }
 
-    // media valorilor
-    [[nodiscard]] double medie() const {
-        if (valori.empty())
-            return 0.0;
-        return static_cast<double>(suma()) / valori.size();
+    T medie() const {
+        return calculeazaMedia();
     }
 
     [[nodiscard]] std::size_t dimensiune() const {
-        return valori.size();
+        return date.size();
     }
 
     [[nodiscard]] bool goala() const {
-        return valori.empty();
+        return date.empty();
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Statistica<T>& s) {
+        os << "Statistica [" << s.numeUnitate << "]: ";
+        for (const auto& d : s.date) os << d << " ";
+        return os;
     }
 };
+
+template <typename T>
+void afiseazaAuditGeneric(const T& obj) {
+    std::cout << "[AUDIT TEMPLATE] Obiectul ocupa " << sizeof(obj) << " bytes in memorie.\n";
+}
 
 #endif

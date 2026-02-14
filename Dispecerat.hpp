@@ -10,6 +10,7 @@
 #include "Mentenanta.hpp"
 #include "Ticketing.hpp"
 
+
 class Dispecerat {
 private:
     std::vector<Vehicul*> vehicule;
@@ -58,6 +59,17 @@ public:
     [[nodiscard]] const std::vector<Vehicul*>& getVehicule() const;
     [[nodiscard]] const std::vector<Ruta>& getRute() const;
     [[nodiscard]] const std::vector<Incident>& getIncidente() const;
+
+    template <typename T>
+    [[nodiscard]] int numaraVehiculeDeTip() const {
+        int count = 0;
+        for (const auto* v : vehicule) {
+            if (dynamic_cast<const T*>(v)) {
+                count++;
+            }
+        }
+        return count;
+    }
 };
 
 #endif
