@@ -15,8 +15,8 @@
 #include "Incident.hpp"
 
 template <typename T, typename V>
-bool verificaTip(V* vehicul) {
-    return dynamic_cast<T*>(vehicul) != nullptr;
+bool verificaTip(const V* vehicul) {
+    return dynamic_cast<const T*>(vehicul) != nullptr;
 }
 
 void curataInput() {
@@ -43,7 +43,7 @@ void afiseazaMeniu() {
     std::cout << "19. Cel mai rapid vehicul | 20. Capacitate Maxima | 21. Timp Mediu Ruta\n";
     std::cout << "22. Raport General | 23. Venituri Totale | 24. Recomandare Smart\n";
     std::cout << "25. Trimite in Service | 26. Repara Vehicul | 27. Raport Tehnic\n";
-    std::cout << "28. Vinde Bilet | 29. Simulare Automata (Audit) | 0. Iesire\n";
+    std::cout << "28. Vinde Bilet | 29. Audit Complet (Tema 3) | 0. Iesire\n";
     std::cout << "Optiunea ta: ";
 }
 
@@ -156,13 +156,13 @@ int main() {
                 std::string n;
                 curataInput();
                 if (!std::getline(std::cin, n)) return 0;
-                if (auto* v = Statistici::vehiculCelMaiRapid(dispecerat, n)) {
+                if (const auto* v = Statistici::vehiculCelMaiRapid(dispecerat, n)) {
                     std::cout << "ID: " << v->getId() << "\n";
                 }
                 break;
             }
             case 20: {
-                if (auto* v = Statistici::vehiculCapacitateMaxima(dispecerat)) {
+                if (const auto* v = Statistici::vehiculCapacitateMaxima(dispecerat)) {
                     std::cout << "ID: " << v->getId() << "\n";
                 }
                 break;
@@ -214,42 +214,37 @@ int main() {
                 break;
             }
             case 29: {
-            std::cout << "\n==========\n";
-            std::cout << "   AUDIT  \n";
-            std::cout << "============\n";
+                std::cout << "\n--- AUDIT TEHNIC GENERAT AUTOMAT ---\n";
+                for (const auto* v : dispecerat.getVehicule()) {
+                    if (verificaTip<Autobuz>(v)) std::cout << "Identificat generic: Autobuz ID " << v->getId() << "\n";
+                }
 
-            Statistica<int> stCapacitate("Capacitate Locuri");
-            for (auto v : dispecerat.getVehicule()) {
-                stCapacitate.adauga(v->getCapacitate());
-            }
+                int km = dispecerat.getManagementTehnic().getKilometri(101);
+                dispecerat.getManagementTehnic().adaugaNotitaTehnica(101, "Audit rutier");
+                std::cout << "Kilometri vehicul 101: " << km << "\n";
 
-            Statistica<double> stDistante("Lungime Rute (km)");
-            for (const auto& r : dispecerat.getRute()) {
-                stDistante.adauga(r.getDistanta());
-            }
+                SistemTicketing& tkt = dispecerat.getSistemTicketing();
+                tkt.afiseazaIstoric();
+                tkt.anuleazaUltimulBilet();
+                tkt.curataIstoric();
 
-            int autobuze = dispecerat.numaraVehiculeDeTip<Autobuz>();
-            int tramvaie = dispecerat.numaraVehiculeDeTip<Tramvai>();
+                Incident auditInc(TipIncident::ACCIDENT, "Audit", 0);
+                auditInc.setImpactMinute(10);
+                auditInc.setDescriere("Descriere audit");
 
-            std::cout << "[FLOTA]\n";
-            std::cout << " -> Autobuze: " << autobuze << " | Tramvaie: " << tramvaie << "\n";
-            if (!stCapacitate.goala()) {
-                std::cout << " -> Locuri totale medii: " << stCapacitate.medie() << "\n";
-            }
+                dispecerat.sorteazaVehiculeDupaCapacitate();
+                dispecerat.filtreazaVehiculeDupaTip("Autobuz");
+                Persistenta::creeazaBackup("sistem.txt", "backup_audit.txt");
 
-            std::cout << "\n[INFRASTRUCTURA]\n";
-            if (!stDistante.goala()) {
-                std::cout << " -> " << stDistante << "\n";
-                std::cout << " -> Distanta medie traseu: " << stDistante.medie() << " km\n";
-            }
+                Statistica<int> stAudit("Audit");
+                stAudit.adauga(100);
+                std::cout << "Elemente procesate: " << stAudit.dimensiune() << "\n";
 
-            std::cout << "\n[DIAGNOSTIC]\n";
-            afiseazaAuditGeneric(dispecerat);
+                std::cout << "Audit clasa Bilet (interfata abstracta) finalizat.\n";
 
-            Logger::getInstance().log(LogLevel::INFO, "Audit finalizat.");
-
-            std::cout << "==========================================\n";
-            break;
+                afiseazaAuditGeneric(dispecerat);
+                Logger::getInstance().log(LogLevel::INFO, "Audit de integritate finalizat.");
+                break;
             }
             default:
                 break;
