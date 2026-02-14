@@ -29,6 +29,8 @@ void populeazaDateTest(Dispecerat& d) {
         d.adaugaVehicul(*VehiculFactory::creeazaVehicul(1, 101, 50));
         d.adaugaVehicul(*VehiculFactory::creeazaVehicul(2, 202, 100));
         d.adaugaRuta(Ruta("Traseu Test", 10.5));
+
+        d.vindeBilet(false, 5.0);
     } catch (...) {}
 }
 
@@ -214,14 +216,29 @@ int main() {
                 break;
             }
             case 29: {
-                std::cout << "\n--- AUDIT TEHNIC GENERAT AUTOMAT ---\n";
+                std::cout << "\n--- AUDIT TEHNIC COMPLET ---\n";
+
+                std::cout << "Autobuze in flota: " << dispecerat.numaraVehiculeDeTip<Autobuz>() << "\n";
+
                 for (const auto* v : dispecerat.getVehicule()) {
-                    if (verificaTip<Autobuz>(v)) std::cout << "Identificat generic: Autobuz ID " << v->getId() << "\n";
+                    if (verificaTip<Autobuz>(v)) {
+                        std::cout << "Vehicul ID " << v->getId() << "\n";
+                    }
+                    
+                    const auto* b = dynamic_cast<const Bilet*>(v);
+                    if (b) {
+                        std::cout << "Serie bilet gasita in sistem: " << b->getSerie() << "\n";
+                    }
                 }
 
-                int km = dispecerat.getManagementTehnic().getKilometri(101);
-                dispecerat.getManagementTehnic().adaugaNotitaTehnica(101, "Audit rutier");
-                std::cout << "Kilometri vehicul 101: " << km << "\n";
+                Statistica<int> stAudit("Audit");
+                if (stAudit.goala()) {
+                    stAudit.adauga(100);
+                }
+                std::cout << "Elemente statistice: " << stAudit.dimensiune() << "\n";
+
+                dispecerat.sorteazaVehiculeDupaCapacitate();
+                dispecerat.filtreazaVehiculeDupaTip("Autobuz");
 
                 SistemTicketing& tkt = dispecerat.getSistemTicketing();
                 tkt.afiseazaIstoric();
@@ -230,20 +247,11 @@ int main() {
 
                 Incident auditInc(TipIncident::ACCIDENT, "Audit", 0);
                 auditInc.setImpactMinute(10);
-                auditInc.setDescriere("Descriere audit");
-
-                dispecerat.sorteazaVehiculeDupaCapacitate();
-                dispecerat.filtreazaVehiculeDupaTip("Autobuz");
-                Persistenta::creeazaBackup("sistem.txt", "backup_audit.txt");
-
-                Statistica<int> stAudit("Audit");
-                stAudit.adauga(100);
-                std::cout << "Elemente procesate: " << stAudit.dimensiune() << "\n";
-
-                std::cout << "Audit clasa Bilet (interfata abstracta) finalizat.\n";
+                auditInc.setDescriere("Audit");
+                Persistenta::creeazaBackup("sistem.txt", "backup.txt");
 
                 afiseazaAuditGeneric(dispecerat);
-                Logger::getInstance().log(LogLevel::INFO, "Audit de integritate finalizat.");
+                Logger::getInstance().log(LogLevel::INFO, "Audit finalizat.");
                 break;
             }
             default:
