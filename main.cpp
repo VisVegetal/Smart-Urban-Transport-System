@@ -28,14 +28,14 @@ void populeazaDateTest(Dispecerat& d) {
         d.adaugaVehicul(*VehiculFactory::creeazaVehicul(1, 101, 50));
         d.adaugaVehicul(*VehiculFactory::creeazaVehicul(2, 202, 100));
         d.adaugaRuta(Ruta("Traseu Test", 10.5));
-        d.vindeBilet(false, 5.0);
+        d.vindeBilet(false, 5.0); 
     } catch (...) {}
 }
 
 int main() {
     Dispecerat dispecerat;
     populeazaDateTest(dispecerat);
-
+    
     std::string inputUtilizator;
 
     while (true) {
