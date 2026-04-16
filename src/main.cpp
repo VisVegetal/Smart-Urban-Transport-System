@@ -215,21 +215,31 @@ int main() {
                 else dispecerat.vindeBilet(false, pr);
                 break;
             }
-                case 29: {
+            case 29: {
                 std::cout << "Audit: " << dispecerat.numaraVehiculeDeTip<Autobuz>() << "\n";
-
-                // În loc să trimiți tot obiectul Dispecerat (care e mare)
-                // trimite doar dimensiunea unui int pentru test
-                int testSize = 10;
-                afiseazaAuditGeneric(testSize);
-
-                // Verifică dacă getVehicule nu returnează prin valoare o copie imensă
-                const auto& vehs = dispecerat.getVehicule();
-                if(!vehs.empty()) std::cout << "Primul ID: " << vehs[0]->getId() << "\n";
-
+                for (const auto* v : dispecerat.getVehicule()) {
+                    if (verificaTip<Autobuz>(v)) std::cout << "ID " << v->getId() << " OK\n";
+                    if (const auto* b = dynamic_cast<const Bilet*>(v)) std::cout << "S: " << b->getSerie() << "\n";
+                }
+                int km = dispecerat.getManagementTehnic().getKilometri(101);
+                dispecerat.getManagementTehnic().adaugaNotitaTehnica(101, "Audit");
+                Statistica<double> stAudit("Audit");
+                if (stAudit.goala()) stAudit.adauga(static_cast<double>(km));
+                std::cout << "Dim: " << stAudit.dimensiune() << "\n";
+                dispecerat.sorteazaVehiculeDupaCapacitate();
+                dispecerat.filtreazaVehiculeDupaTip("Autobuz");
+                SistemTicketing& tkt = dispecerat.getSistemTicketing();
+                tkt.afiseazaIstoric();
+                tkt.anuleazaUltimulBilet();
+                tkt.curataIstoric();
+                Incident auditInc(TipIncident::ACCIDENT, "Audit", 0);
+                auditInc.setImpactMinute(15);
+                auditInc.setDescriere("Audit");
+                Persistenta::creeazaBackup("sistem.txt", "backup.txt");
+                afiseazaAuditGeneric(dispecerat);
                 Logger::getInstance().log(LogLevel::INFO, "Audit OK");
                 break;
-                }
+            }
             default:
                 break;
             }
