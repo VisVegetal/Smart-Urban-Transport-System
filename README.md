@@ -1,39 +1,35 @@
-# Smart Urban Transport System 🚍🚋🚇
+# 🚍 Smart Urban Transport System
 
-## Descriere
-Smart Urban Transport System este o aplicație C++ de tip CLI care simulează funcționarea unui sistem de transport urban. Proiectul permite gestionarea vehiculelor, rutelor și incidentelor, precum și calcularea timpilor de deplasare și generarea de statistici relevante.
-
----
-
-## Funcționalități principale
-
-- Gestionarea vehiculelor (Autobuz, Tramvai, Metrou)
-- Gestionarea rutelor urbane
-- Gestionarea incidentelor (trafic, întârzieri, defectiuni, accidente)
-- Calcularea timpilor de deplasare pe rute
-- Simularea unei curse pentru un vehicul specific
-- Generarea de statistici (distribuție vehicule, rapoarte)
-- Salvarea și încărcarea stării sistemului din fișiere text
-- Sistem de logare a evenimentelor
+**Smart Urban Transport System** este o aplicație C++ de tip Command Line Interface (CLI) concepută pentru simularea și gestionarea eficientă a unei rețele de transport public. Proiectul utilizează concepte avansate de Programare Orientată pe Obiect (POO) pentru a modela interacțiunea complexă dintre vehicule, infrastructură și pasageri.
 
 ---
 
-## Structura proiectului
+## ✨ Funcționalități Principale
 
-- **Vehicul** – clasă abstractă de bază
-- **Autobuz / Tramvai / Metrou** – implementări concrete
-- **Ruta** – modelează o rută urbană
-- **Incident** – modelează evenimente neprevăzute
-- **Dispecerat** – componenta centrală de gestionare
-- **Statistici** – analiză și rapoarte
-- **Persistenta** – salvare și încărcare din fișiere
-- **Logger** – gestionarea logurilor
-- **main.cpp** – interfața CLI
+### 🚋 Gestiune Flotă și Infrastructură
+- **Sistem Multimodal:** Suport pentru vehicule de tip `Autobuz`, `Tramvai` și `Metrou`, fiecare cu logică specifică de operare.
+- **Instanțiere Controlată:** Utilizarea unui `VehiculFactory` pentru crearea obiectelor într-un mod extensibil și sigur.
+- **Rute și Stații:** Definirea traseelor urbane prin integrarea obiectelor de tip `Statie`, permițând o modelare realistă a hărții de transport.
 
+### ⚙️ Mentenanță și Operațiuni
+- **Modul de Mentenanță:** Urmărirea stării tehnice, a kilometrajului și gestionarea fluxului de reparații pentru fiecare vehicul în parte.
+- **Ticketing & Bilete:** Sistem integrat pentru emiterea biletelor, gestionarea seriilor acestora și evidența veniturilor colectate.
+- **Managementul Incidentelor:** Capacitatea de a raporta și procesa evenimente neprevăzute (accidente, blocaje) care influențează dinamica sistemului.
 
+### 📊 Analiză și Persistență
+- **Statistici Avansate:** Generarea de rapoarte detaliate prin module dedicate și utilizarea template-ului generic `Statistica` pentru prelucrarea datelor.
+- **Persistența Datelor:** Salvarea și încărcarea automată a stării întregului sistem folosind fișiere externe pentru continuitatea simulării.
+- **Logare Centralizată:** Monitorizarea activităților prin `Logger`, asigurând un istoric clar al tuturor evenimentelor din sistem.
 
+### ⚠️ Tratarea Erorilor
+- **Gestiune Robustă:** Utilizarea unui sistem de excepții custom pentru a trata scenariile de input invalid sau erorile de logică (ex: vehicule inexistente, rute duplicate).
 
-## Rulare
+---
 
-Aplicația rulează în consolă și oferă un meniu interactiv. Utilizatorul poate selecta opțiunile dorite introducând numărul corespunzător.
+## 🏗️ Tehnologii și Concepte Utilizate
+
+- **Limbaj:** C++20
+- **OOP:** Polimorfism, Clase Abstracte, Agregare și Compoziție.
+- **Design Patterns:** Singleton (Logger), Factory (VehiculFactory).
+- **STL & Genericitate:** Utilizarea intensivă a containerelor (`std::vector`), algoritmilor și a template-urilor.
 
