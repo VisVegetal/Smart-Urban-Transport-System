@@ -1,12 +1,12 @@
-#include "Statistici.hpp"
-#include "Dispecerat.hpp"
-#include "Vehicul.hpp"
-#include "Autobuz.hpp"
-#include "Tramvai.hpp"
-#include "Metrou.hpp"
-#include "Exceptii.hpp"
-#include "Statie.hpp"
-#include "Statistica.hpp"
+#include "../include/Statistici.hpp"
+#include "../include/Dispecerat.hpp"
+#include "../include/Vehicul.hpp"
+#include "../include/Autobuz.hpp"
+#include "../include/Tramvai.hpp"
+#include "../include/Metrou.hpp"
+#include "../include/Exceptii.hpp"
+#include "../include/Statie.hpp"
+#include "../include/Statistica.hpp"
 
 #include <iostream>
 #include <limits>

@@ -49,39 +49,39 @@ include(cmake/CopyHelper.cmake)
 
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
 add_executable(${MAIN_EXECUTABLE_NAME}
-    main.cpp
-        Vehicul.hpp
-        Autobuz.hpp
-        Tramvai.hpp
-        Metrou.hpp
-        Statie.hpp
-        Ruta.hpp
-        Incident.hpp
-        Dispecerat.hpp
-        Exceptii.hpp
-        Vehicul.cpp
-        Autobuz.cpp
-        Tramvai.cpp
-        Metrou.cpp
-        Statie.cpp
-        Dispecerat.cpp
-        Logger.cpp
-        Logger.hpp
-        Statistici.cpp
-        Statistici.hpp
-        Persistenta.cpp
-        Persistenta.hpp
-        Statistica.hpp
-        Utilitare.hpp
-        VehiculFactory.hpp
-        Bilet.hpp
-        Bilet.cpp
-        Ticketing.cpp
-        Ticketing.hpp
-        Mentenanta.cpp
-        Mentenanta.hpp
-        Ruta.cpp
-        Incident.cpp
+        src/main.cpp
+        include/Vehicul.hpp
+        include/Autobuz.hpp
+        include/Tramvai.hpp
+        include/Metrou.hpp
+        include/Statie.hpp
+        include/Ruta.hpp
+        include/Incident.hpp
+        include/Dispecerat.hpp
+        include/Exceptii.hpp
+        src/Vehicul.cpp
+        src/Autobuz.cpp
+        src/Tramvai.cpp
+        src/Metrou.cpp
+        src/Statie.cpp
+        src/Dispecerat.cpp
+        src/Logger.cpp
+        include/Logger.hpp
+        src/Statistici.cpp
+        include/Statistici.hpp
+        src/Persistenta.cpp
+        include/Persistenta.hpp
+        include/Statistica.hpp
+        include/Utilitare.hpp
+        include/VehiculFactory.hpp
+        include/Bilet.hpp
+        src/Bilet.cpp
+        src/Ticketing.cpp
+        include/Ticketing.hpp
+        src/Mentenanta.cpp
+        include/Mentenanta.hpp
+        src/Ruta.cpp
+        src/Incident.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )

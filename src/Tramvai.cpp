@@ -1,4 +1,4 @@
-#include "Tramvai.hpp"
+#include "../include/Tramvai.hpp"
 
 Tramvai::Tramvai(int id, int capacitate, int semafoare, bool prioritate)
     : Vehicul(id, capacitate),

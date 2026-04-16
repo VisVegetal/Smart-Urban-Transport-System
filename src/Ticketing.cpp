@@ -1,4 +1,4 @@
-#include "Ticketing.hpp"
+#include "../include/Ticketing.hpp"
 #include <iostream>
 
 SistemTicketing::SistemTicketing() : venitTotal(0.0), contorSerie(1000) {}

@@ -1,6 +1,6 @@
-#include "Incident.hpp"
+#include "../include/Incident.hpp"
 #include <utility>
-#include "Exceptii.hpp"
+#include "../include/Exceptii.hpp"
 
 Incident::Incident() 
     : tip(TipIncident::TRAFIC_INTENS), descriere("Necunoscut"), impactMinute(0), dataRaportarii("N/A") {}

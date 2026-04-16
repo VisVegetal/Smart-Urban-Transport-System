@@ -1,6 +1,6 @@
-#include "Dispecerat.hpp"
-#include "Logger.hpp"
-#include "Exceptii.hpp"
+#include "../include/Dispecerat.hpp"
+#include "../include/Logger.hpp"
+#include "../include/Exceptii.hpp"
 #include <iostream>
 #include <algorithm>
 #include <numeric>

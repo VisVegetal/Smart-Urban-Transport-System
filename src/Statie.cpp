@@ -1,6 +1,6 @@
-#include "Statie.hpp"
+#include "../include/Statie.hpp"
 #include <iostream>
-#include "Exceptii.hpp"
+#include "../include/Exceptii.hpp"
 
 Statie::Statie(const std::string& nume)
     : nume(nume) {

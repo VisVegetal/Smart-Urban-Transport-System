@@ -1,4 +1,4 @@
-#include "Metrou.hpp"
+#include "../include/Metrou.hpp"
 
 Metrou::Metrou(int id, int capacitate, int interval, bool automat)
     : Vehicul(id, capacitate),

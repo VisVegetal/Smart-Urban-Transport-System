@@ -1,4 +1,4 @@
-#include "Autobuz.hpp"
+#include "../include/Autobuz.hpp"
 
 Autobuz::Autobuz(int id, int capacitate, bool banda, int opriri, int semafoare)
     : Vehicul(id, capacitate),

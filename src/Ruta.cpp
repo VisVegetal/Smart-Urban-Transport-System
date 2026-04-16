@@ -1,4 +1,4 @@
-#include "Ruta.hpp"
+#include "../include/Ruta.hpp"
 #include <utility>
 
 Ruta::Ruta(std::string nume, double distanta)
