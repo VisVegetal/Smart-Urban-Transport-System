@@ -19,6 +19,7 @@ bool verificaTip(const V* vehicul) {
 }
 
 void curataInput() {
+    if (std::cin.eof()) return;
     std::cin.clear();
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
@@ -28,14 +29,14 @@ void populeazaDateTest(Dispecerat& d) {
         d.adaugaVehicul(*VehiculFactory::creeazaVehicul(1, 101, 50));
         d.adaugaVehicul(*VehiculFactory::creeazaVehicul(2, 202, 100));
         d.adaugaRuta(Ruta("Traseu Test", 10.5));
-        d.vindeBilet(false, 5.0); 
+        d.vindeBilet(false, 5.0);
     } catch (...) {}
 }
 
 int main() {
     Dispecerat dispecerat;
     populeazaDateTest(dispecerat);
-    
+
     std::string inputUtilizator;
 
     while (true) {
@@ -60,6 +61,9 @@ int main() {
         try {
             optiune = std::stoi(inputUtilizator);
         } catch (...) {
+            if (std::cin.eof()) break;
+            std::cout << "Optiune invalida! Introduceti un numar.\n";
+            curataInput();
             continue;
         }
 
@@ -241,6 +245,7 @@ int main() {
             }
         } catch (const std::exception& e) {
             std::cerr << "E: " << e.what() << "\n";
+            if (std::cin.eof()) break;
         }
     }
     return 0;
