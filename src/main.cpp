@@ -69,9 +69,6 @@ int main() {
 
         if (optiune == 0) break;
 
-        // Debug: print which option is about to be processed
-        std::cerr << "[DEBUG] Procesare optiune: " << optiune << "\n";
-
         try {
             switch (optiune) {
             case 1: {
@@ -219,19 +216,16 @@ int main() {
                 break;
             }
             case 29: {
-                std::cout << "[DEBUG] START Audit" << std::endl;
-                std::cout << "Audit: " << dispecerat.numaraVehiculeDeTip<Autobuz>() << std::endl;
+                std::cout << "Audit: " << dispecerat.numaraVehiculeDeTip<Autobuz>() << "\n";
                 for (const auto* v : dispecerat.getVehicule()) {
-                    if (verificaTip<Autobuz>(v)) std::cout << "ID " << v->getId() << " OK" << std::endl;
-                    // Nu are sens sa verificam daca un Vehicul* este Bilet* - corectam eroarea logica
-                    // (Daca trebuia inspectat sistemul de bilete, iterati peste SistemTicketing::bileteVandute)
+                    if (verificaTip<Autobuz>(v)) std::cout << "ID " << v->getId() << " OK\n";
+                    if (const auto* b = dynamic_cast<const Bilet*>(v)) std::cout << "S: " << b->getSerie() << "\n";
                 }
-                std::cout << "[DEBUG] After vehicle loop" << std::endl;
                 int km = dispecerat.getManagementTehnic().getKilometri(101);
                 dispecerat.getManagementTehnic().adaugaNotitaTehnica(101, "Audit");
                 Statistica<double> stAudit("Audit");
                 if (stAudit.goala()) stAudit.adauga(static_cast<double>(km));
-                std::cout << "Dim: " << stAudit.dimensiune() << std::endl;
+                std::cout << "Dim: " << stAudit.dimensiune() << "\n";
                 dispecerat.sorteazaVehiculeDupaCapacitate();
                 dispecerat.filtreazaVehiculeDupaTip("Autobuz");
                 SistemTicketing& tkt = dispecerat.getSistemTicketing();
@@ -242,11 +236,8 @@ int main() {
                 auditInc.setImpactMinute(15);
                 auditInc.setDescriere("Audit");
                 Persistenta::creeazaBackup("sistem.txt", "backup.txt");
-                std::cout << "[DEBUG] Before afiseazaAuditGeneric" << std::endl;
                 afiseazaAuditGeneric(dispecerat);
-                std::cout << "[DEBUG] After afiseazaAuditGeneric" << std::endl;
                 Logger::getInstance().log(LogLevel::INFO, "Audit OK");
-                std::cout << "[DEBUG] END Audit" << std::endl;
                 break;
             }
             default:
