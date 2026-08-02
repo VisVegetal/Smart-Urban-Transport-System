@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.26)
 
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing executable name in this file
 # for now, the project name is used as the executable name
-set(MAIN_PROJECT_NAME "oop")
+set(MAIN_PROJECT_NAME "smart_urban_transport")
 set(MAIN_EXECUTABLE_NAME "${MAIN_PROJECT_NAME}")
 
 
@@ -50,37 +50,36 @@ include(cmake/CopyHelper.cmake)
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
 add_executable(${MAIN_EXECUTABLE_NAME}
         src/main.cpp
-        include/Vehicul.hpp
-        include/Autobuz.hpp
-        include/Tramvai.hpp
-        include/Metrou.hpp
-        include/Statie.hpp
-        include/Ruta.hpp
+        include/Vehicle.hpp
+        include/Bus.hpp
+        include/Tram.hpp
+        include/Metro.hpp
+        include/Station.hpp
+        include/Route.hpp
         include/Incident.hpp
-        include/Dispecerat.hpp
-        include/Exceptii.hpp
-        src/Vehicul.cpp
-        src/Autobuz.cpp
-        src/Tramvai.cpp
-        src/Metrou.cpp
-        src/Statie.cpp
-        src/Dispecerat.cpp
+        include/Dispatcher.hpp
+        include/Exceptions.hpp
+        src/Vehicle.cpp
+        src/Bus.cpp
+        src/Tram.cpp
+        src/Metro.cpp
+        src/Station.cpp
+        src/Dispatcher.cpp
         src/Logger.cpp
         include/Logger.hpp
-        src/Statistici.cpp
-        include/Statistici.hpp
-        src/Persistenta.cpp
-        include/Persistenta.hpp
-        include/Statistica.hpp
-        include/Utilitare.hpp
-        include/VehiculFactory.hpp
-        include/Bilet.hpp
-        src/Bilet.cpp
+        src/Statistics.cpp
+        include/Statistics.hpp
+        src/Persistence.cpp
+        include/Persistence.hpp
+        include/StatisticsSeries.hpp
+        include/VehicleFactory.hpp
+        include/Ticket.hpp
+        src/Ticket.cpp
         src/Ticketing.cpp
         include/Ticketing.hpp
-        src/Mentenanta.cpp
-        include/Mentenanta.hpp
-        src/Ruta.cpp
+        src/Maintenance.cpp
+        include/Maintenance.hpp
+        src/Route.cpp
         src/Incident.cpp
 )
 
@@ -108,6 +107,6 @@ if(APPLE)
     install(FILES launcher.command DESTINATION ${DESTINATION_DIR})
 endif()
 
-copy_files(FILES tastatura.txt COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
-# copy_files(FILES tastatura.txt config.json DIRECTORY images sounds COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
+copy_files(FILES demo_input.txt COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
+# copy_files(FILES demo_input.txt config.json DIRECTORY images sounds COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
 # copy_files(DIRECTORY images sounds COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})

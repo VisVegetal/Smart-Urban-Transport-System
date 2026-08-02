@@ -1,65 +1,58 @@
 #include "../include/Incident.hpp"
+#include "../include/Exceptions.hpp"
+
 #include <utility>
-#include "../include/Exceptii.hpp"
 
-Incident::Incident() 
-    : tip(TipIncident::TRAFIC_INTENS), descriere("Necunoscut"), impactMinute(0), dataRaportarii("N/A") {}
+Incident::Incident()
+    : type(IncidentType::HEAVY_TRAFFIC),
+      description("Unknown"),
+      impactMinutes(0) {}
 
-Incident::Incident(TipIncident tip, std::string descriere, int impactMinute, std::string data)
-    : tip(tip), descriere(std::move(std::move(descriere))), impactMinute(impactMinute), dataRaportarii(std::move(data)) {
-    if (impactMinute < 0) throw ValoareInvalidaException("Impactul nu poate fi negativ.");
-}
-
-Incident::Incident(const Incident& other) {
-    this->tip = other.tip;
-    this->descriere = other.descriere;
-    this->impactMinute = other.impactMinute;
-    this->dataRaportarii = other.dataRaportarii;
-}
-
-Incident& Incident::operator=(const Incident& other) {
-    if (this != &other) {
-        this->tip = other.tip;
-        this->descriere = other.descriere;
-        this->impactMinute = other.impactMinute;
-        this->dataRaportarii = other.dataRaportarii;
-    }
-    return *this;
-}
-
-TipIncident Incident::getTip() const { return tip; }
-const std::string& Incident::getDescriere() const { return descriere; }
-int Incident::getImpactMinute() const { return impactMinute; }
-
-std::string Incident::getTipString() const {
-    switch (tip) {
-        case TipIncident::TRAFIC_INTENS: return "Trafic Intens";
-        case TipIncident::INTARZIERE: return "Intarziere";
-        case TipIncident::DEFECTIUNE: return "Defectiune";
-        case TipIncident::ACCIDENT: return "Accident";
-        case TipIncident::METEO_NEFAVORABIL: return "Meteo";
-        case TipIncident::LUCRARI_DRUM: return "Lucrari";
-        default: return "Altele";
+Incident::Incident(IncidentType type, std::string description, int impactMinutes)
+    : type(type),
+      description(std::move(description)),
+      impactMinutes(impactMinutes) {
+    if (impactMinutes < 0) {
+        throw InvalidValueException("Impact cannot be negative.");
     }
 }
 
-void Incident::setImpactMinute(int minute) {
-    if (minute >= 0) this->impactMinute = minute;
+IncidentType Incident::getType() const { return type; }
+const std::string& Incident::getDescription() const { return description; }
+int Incident::getImpactMinutes() const { return impactMinutes; }
+
+std::string Incident::getTypeString() const {
+    switch (type) {
+        case IncidentType::HEAVY_TRAFFIC: return "Heavy Traffic";
+        case IncidentType::DELAY: return "Delay";
+        case IncidentType::BREAKDOWN: return "Breakdown";
+        case IncidentType::ACCIDENT: return "Accident";
+        case IncidentType::BAD_WEATHER: return "Weather";
+        case IncidentType::ROAD_WORKS: return "Road Works";
+        default: return "Other";
+    }
 }
 
-void Incident::setDescriere(const std::string& desc) {
-    if (!desc.empty()) this->descriere = desc;
+void Incident::setImpactMinutes(int minutes) {
+    if (minutes >= 0) this->impactMinutes = minutes;
+}
+
+void Incident::setDescription(const std::string& desc) {
+    if (!desc.empty()) this->description = desc;
 }
 
 bool Incident::operator==(const Incident& other) const {
-    return (this->tip == other.tip && this->impactMinute == other.impactMinute && this->descriere == other.descriere);
+    return this->type == other.type &&
+           this->impactMinutes == other.impactMinutes &&
+           this->description == other.description;
 }
 
 bool Incident::operator<(const Incident& other) const {
-    return this->impactMinute < other.impactMinute;
+    return this->impactMinutes < other.impactMinutes;
 }
 
 std::ostream& operator<<(std::ostream& os, const Incident& i) {
-    os << "[" << i.getTipString() << "] " << i.descriere << " | Impact: " << i.impactMinute << " min";
+    os << "[" << i.getTypeString() << "] " << i.description
+       << " | Impact: " << i.impactMinutes << " min";
     return os;
 }

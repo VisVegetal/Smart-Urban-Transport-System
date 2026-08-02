@@ -1,250 +1,209 @@
 #include <iostream>
 #include <limits>
 #include <string>
-#include <vector>
 
-#include "../include/Dispecerat.hpp"
-#include "../include/Vehicul.hpp"
-#include "../include/Logger.hpp"
-#include "../include/Persistenta.hpp"
-#include "../include/Statistici.hpp"
-#include "../include/VehiculFactory.hpp"
-#include "../include/Mentenanta.hpp"
-#include "../include/Statistica.hpp"
+#include "../include/Dispatcher.hpp"
 #include "../include/Incident.hpp"
+#include "../include/Logger.hpp"
+#include "../include/Maintenance.hpp"
+#include "../include/Persistence.hpp"
+#include "../include/Statistics.hpp"
+#include "../include/Vehicle.hpp"
+#include "../include/VehicleFactory.hpp"
 
-template <typename T, typename V>
-bool verificaTip(const V* vehicul) {
-    return dynamic_cast<const T*>(vehicul) != nullptr;
-}
-
-void curataInput() {
+void clearInput() {
     if (std::cin.eof()) return;
     std::cin.clear();
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
-void populeazaDateTest(Dispecerat& d) {
-    try {
-        d.adaugaVehicul(*VehiculFactory::creeazaVehicul(1, 101, 50));
-        d.adaugaVehicul(*VehiculFactory::creeazaVehicul(2, 202, 100));
-        d.adaugaRuta(Ruta("Traseu Test", 10.5));
-        d.vindeBilet(false, 5.0);
-    } catch (...) {}
-}
-
 int main() {
-    Dispecerat dispecerat;
-    populeazaDateTest(dispecerat);
+    Dispatcher dispatcher;
 
-    std::string inputUtilizator;
+    std::string userInput;
 
     while (true) {
-        std::cout << "\n=== SISTEM GESTIUNE TRANSPORT URBAN ===\n";
-        std::cout << "1. Adauga Vehicul | 2. Sterge Vehicul | 3. Afiseaza Vehicule\n";
-        std::cout << "4. Adauga Ruta | 5. Afiseaza Rute | 16. Sterge Ruta\n";
-        std::cout << "6. Adauga Incident | 7. Afiseaza Incidente | 8. Timp Total Traseu\n";
-        std::cout << "9. Afiseaza Loguri | 10. Salveaza Loguri | 11. Simuleaza Cursa\n";
-        std::cout << "12. Salveaza Sistem | 13. Incarca Sistem | 17. Valideaza Fisier\n";
-        std::cout << "14. Raport Detaliat | 15. Distributie Tipuri | 18. Export Statistici\n";
-        std::cout << "19. Cel mai rapid vehicul | 20. Capacitate Maxima | 21. Timp Mediu Ruta\n";
-        std::cout << "22. Raport General | 23. Venituri Totale | 24. Recomandare Smart\n";
-        std::cout << "25. Trimite in Service | 26. Repara Vehicul | 27. Raport Tehnic\n";
-        std::cout << "28. Vinde Bilet | 29. Audit Complet | 0. Iesire\n";
-        std::cout << "Optiunea ta: ";
+        std::cout << "\n=== URBAN TRANSPORT MANAGEMENT SYSTEM ===\n";
+        std::cout << "1. Add Vehicle | 2. Delete Vehicle | 3. Show Vehicles\n";
+        std::cout << "4. Add Route | 5. Show Routes | 16. Delete Route\n";
+        std::cout << "6. Add Incident | 7. Show Incidents | 8. Total Route Time\n";
+        std::cout << "9. Show Logs | 10. Save Logs | 11. Simulate Trip\n";
+        std::cout << "12. Save System | 13. Load System | 17. Validate File\n";
+        std::cout << "14. Detailed Report | 15. Vehicle Distribution | 18. General Report\n";
+        std::cout << "19. Fastest Vehicle | 20. Max Capacity | 21. Average Route Time\n";
+        std::cout << "22. Activity Report | 23. Total Revenue | 24. Smart Recommendation\n";
+        std::cout << "25. Send to Service | 26. Repair Vehicle | 27. Technical Report\n";
+        std::cout << "28. Sell Ticket | 0. Exit\n";
+        std::cout << "Your option: ";
 
-        if (!(std::cin >> inputUtilizator)) {
+        if (!(std::cin >> userInput)) {
             break;
         }
 
-        int optiune;
+        int option;
         try {
-            optiune = std::stoi(inputUtilizator);
+            option = std::stoi(userInput);
         } catch (...) {
             if (std::cin.eof()) break;
-            std::cout << "Optiune invalida! Introduceti un numar.\n";
-            curataInput();
+            std::cout << "Invalid option! Please enter a number.\n";
+            clearInput();
             continue;
         }
 
-        if (optiune == 0) break;
+        if (option == 0) break;
 
         try {
-            switch (optiune) {
+            switch (option) {
             case 1: {
-                int t, id, c;
-                if (!(std::cin >> t >> id >> c)) { curataInput(); break; }
-                dispecerat.adaugaVehicul(*VehiculFactory::creeazaVehicul(t, id, c));
+                int type, id, capacity;
+                if (!(std::cin >> type >> id >> capacity)) { clearInput(); break; }
+                dispatcher.addVehicle(VehicleFactory::createVehicle(type, id, capacity));
                 break;
             }
             case 2: {
                 int id;
-                if (!(std::cin >> id)) { curataInput(); break; }
-                dispecerat.stergeVehicul(id);
+                if (!(std::cin >> id)) { clearInput(); break; }
+                dispatcher.removeVehicle(id);
                 break;
             }
             case 3:
-                dispecerat.afiseazaVehicule();
+                dispatcher.showVehicles();
                 break;
             case 4: {
-                std::string nume;
-                double dist;
-                curataInput();
-                if (!std::getline(std::cin, nume) || nume.empty()) break;
-                if (!(std::cin >> dist)) { curataInput(); break; }
-                dispecerat.adaugaRuta(Ruta(nume, dist));
+                std::string name;
+                double distance;
+                clearInput();
+                if (!std::getline(std::cin, name) || name.empty()) break;
+                if (!(std::cin >> distance)) { clearInput(); break; }
+                dispatcher.addRoute(Route(name, distance));
                 break;
             }
             case 5:
-                dispecerat.afiseazaRute();
+                dispatcher.showRoutes();
                 break;
             case 6: {
-                int ti, imp;
-                std::string desc;
-                if (!(std::cin >> ti >> imp)) { curataInput(); break; }
-                curataInput();
-                if (!std::getline(std::cin, desc)) break;
-                dispecerat.adaugaIncident(Incident(static_cast<TipIncident>(ti), desc, imp));
+                int type, impact;
+                std::string description;
+                if (!(std::cin >> type >> impact)) { clearInput(); break; }
+                clearInput();
+                if (!std::getline(std::cin, description)) break;
+                dispatcher.addIncident(
+                    Incident(static_cast<IncidentType>(type), description, impact));
                 break;
             }
             case 7:
-                dispecerat.afiseazaIncidente();
+                dispatcher.showIncidents();
                 break;
             case 8: {
-                std::string n;
-                curataInput();
-                if (!std::getline(std::cin, n)) break;
-                std::cout << "Timp: " << dispecerat.calculeazaTimpTotal(n) << "\n";
+                std::string name;
+                clearInput();
+                if (!std::getline(std::cin, name)) break;
+                std::cout << "Time: " << dispatcher.calculateTotalTime(name) << "\n";
                 break;
             }
             case 9:
-                Logger::getInstance().afiseazaLoguri();
+                Logger::getInstance().showLogs();
                 break;
             case 10:
-                Logger::getInstance().salveazaInFisier("audit.log");
+                Logger::getInstance().saveToFile("audit.log");
                 break;
             case 11: {
                 int id;
-                std::string n;
-                if (!(std::cin >> id)) { curataInput(); break; }
-                curataInput();
-                if (!std::getline(std::cin, n)) break;
-                std::cout << "Rezultat: " << dispecerat.simuleazaCursa(id, n) << "\n";
+                std::string name;
+                if (!(std::cin >> id)) { clearInput(); break; }
+                clearInput();
+                if (!std::getline(std::cin, name)) break;
+                std::cout << "Result: " << dispatcher.simulateTrip(id, name) << "\n";
                 break;
             }
             case 12:
-                Persistenta::salveazaSistem(dispecerat, "sistem.txt");
+                Persistence::saveSystem(dispatcher, "system.txt");
                 break;
             case 13:
-                Persistenta::incarcaSistem(dispecerat, "sistem.txt");
+                Persistence::loadSystem(dispatcher, "system.txt");
                 break;
             case 14:
-                Statistici::raportDetaliat(dispecerat);
+                Statistics::detailedReport(dispatcher);
                 break;
             case 15:
-                Statistici::distributieVehicule(dispecerat);
+                Statistics::vehicleDistribution(dispatcher);
                 break;
             case 16: {
-                std::string n;
-                curataInput();
-                if (!std::getline(std::cin, n)) break;
-                dispecerat.stergeRuta(n);
+                std::string name;
+                clearInput();
+                if (!std::getline(std::cin, name)) break;
+                dispatcher.removeRoute(name);
                 break;
             }
             case 17:
-                if (Persistenta::esteFisierValid("sistem.txt")) std::cout << "OK\n";
+                if (Persistence::isFileValid("system.txt")) std::cout << "File is valid.\n";
                 break;
             case 18:
-                Statistici::raportGeneral(dispecerat);
+                Statistics::generalReport(dispatcher);
                 break;
             case 19: {
-                std::string n;
-                curataInput();
-                if (!std::getline(std::cin, n)) break;
-                if (const auto* v = Statistici::vehiculCelMaiRapid(dispecerat, n))
+                std::string name;
+                clearInput();
+                if (!std::getline(std::cin, name)) break;
+                if (const auto* v = Statistics::fastestVehicle(dispatcher, name))
                     std::cout << "ID: " << v->getId() << "\n";
                 break;
             }
             case 20:
-                if (const auto* v = Statistici::vehiculCapacitateMaxima(dispecerat))
+                if (const auto* v = Statistics::maxCapacityVehicle(dispatcher))
                     std::cout << "ID: " << v->getId() << "\n";
                 break;
             case 21: {
-                std::string n;
-                curataInput();
-                if (!std::getline(std::cin, n)) break;
-                std::cout << "Medie: " << Statistici::timpMediuPeRuta(dispecerat, n) << "\n";
+                std::string name;
+                clearInput();
+                if (!std::getline(std::cin, name)) break;
+                std::cout << "Average: " << Statistics::averageTimeOnRoute(dispatcher, name) << "\n";
                 break;
             }
             case 22:
-                dispecerat.genereazaRaportActivitate();
+                dispatcher.generateActivityReport();
                 break;
             case 23:
-                std::cout << "Venituri: " << dispecerat.calculeazaVenituriTotale() << "\n";
+                std::cout << "Revenue: " << dispatcher.calculateTotalRevenue() << " RON\n";
                 break;
             case 24: {
-                std::string n;
-                curataInput();
-                if (!std::getline(std::cin, n)) break;
-                Statistici::recomandaVehiculOptim(dispecerat, n);
+                std::string name;
+                clearInput();
+                if (!std::getline(std::cin, name)) break;
+                Statistics::recommendOptimalVehicle(dispatcher, name);
                 break;
             }
             case 25: {
                 int id;
-                std::string m;
-                if (!(std::cin >> id)) { curataInput(); break; }
-                curataInput();
-                if (!std::getline(std::cin, m)) break;
-                dispecerat.getManagementTehnic().trimiteInService(id, m);
+                std::string reason;
+                if (!(std::cin >> id)) { clearInput(); break; }
+                clearInput();
+                if (!std::getline(std::cin, reason)) break;
+                dispatcher.getMaintenance().sendToService(id, reason);
                 break;
             }
             case 26: {
                 int id;
-                if (!(std::cin >> id)) { curataInput(); break; }
-                dispecerat.getManagementTehnic().reparaVehicul(id);
+                if (!(std::cin >> id)) { clearInput(); break; }
+                dispatcher.getMaintenance().repairVehicle(id);
                 break;
             }
             case 27:
-                dispecerat.getManagementTehnic().genereazaRaportTehnic();
+                dispatcher.getMaintenance().generateTechnicalReport();
                 break;
             case 28: {
-                int tb;
-                double pr;
-                if (!(std::cin >> tb >> pr)) { curataInput(); break; }
-                if (tb == 2) dispecerat.vindeBilet(true, pr, 0.5);
-                else dispecerat.vindeBilet(false, pr);
-                break;
-            }
-            case 29: {
-                std::cout << "Audit: " << dispecerat.numaraVehiculeDeTip<Autobuz>() << "\n";
-                for (const auto* v : dispecerat.getVehicule()) {
-                    if (verificaTip<Autobuz>(v)) std::cout << "ID " << v->getId() << " OK\n";
-                    if (const auto* b = dynamic_cast<const Bilet*>(v)) std::cout << "S: " << b->getSerie() << "\n";
-                }
-                int km = dispecerat.getManagementTehnic().getKilometri(101);
-                dispecerat.getManagementTehnic().adaugaNotitaTehnica(101, "Audit");
-                Statistica<double> stAudit("Audit");
-                if (stAudit.goala()) stAudit.adauga(static_cast<double>(km));
-                std::cout << "Dim: " << stAudit.dimensiune() << "\n";
-                dispecerat.sorteazaVehiculeDupaCapacitate();
-                dispecerat.filtreazaVehiculeDupaTip("Autobuz");
-                SistemTicketing& tkt = dispecerat.getSistemTicketing();
-                tkt.afiseazaIstoric();
-                tkt.anuleazaUltimulBilet();
-                tkt.curataIstoric();
-                Incident auditInc(TipIncident::ACCIDENT, "Audit", 0);
-                auditInc.setImpactMinute(15);
-                auditInc.setDescriere("Audit");
-                Persistenta::creeazaBackup("sistem.txt", "backup.txt");
-                afiseazaAuditGeneric(dispecerat);
-                Logger::getInstance().log(LogLevel::INFO, "Audit OK");
+                int ticketType;
+                double price;
+                if (!(std::cin >> ticketType >> price)) { clearInput(); break; }
+                if (ticketType == 2) dispatcher.sellTicket(true, price, 0.5);
+                else dispatcher.sellTicket(false, price);
                 break;
             }
             default:
                 break;
             }
         } catch (const std::exception& e) {
-            std::cerr << "E: " << e.what() << "\n";
+            std::cerr << "Error: " << e.what() << "\n";
             if (std::cin.eof()) break;
         }
     }

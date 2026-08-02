@@ -1,40 +1,39 @@
 #ifndef INCIDENT_HPP
 #define INCIDENT_HPP
 
+#include <ostream>
 #include <string>
-#include <iostream>
 
-enum class TipIncident {
-    TRAFIC_INTENS,
-    INTARZIERE,
-    DEFECTIUNE,
+enum class IncidentType {
+    HEAVY_TRAFFIC,
+    DELAY,
+    BREAKDOWN,
     ACCIDENT,
-    METEO_NEFAVORABIL,
-    LUCRARI_DRUM
+    BAD_WEATHER,
+    ROAD_WORKS
 };
 
 class Incident {
 private:
-    TipIncident tip;
-    std::string descriere;
-    int impactMinute;
-    std::string dataRaportarii;
+    IncidentType type;
+    std::string description;
+    int impactMinutes;
 
 public:
     Incident();
-    Incident(TipIncident tip, std::string descriere, int impactMinute, std::string data = "11-02-2026");
+    Incident(IncidentType type, std::string description, int impactMinutes);
 
-    Incident(const Incident& other);
-    Incident& operator=(const Incident& other);
+    Incident(const Incident& other) = default;
+    Incident& operator=(const Incident& other) = default;
     ~Incident() = default;
 
-    [[nodiscard]] TipIncident getTip() const;
-    [[nodiscard]] const std::string& getDescriere() const;
-    [[nodiscard]] int getImpactMinute() const;
-    [[nodiscard]] std::string getTipString() const;
+    [[nodiscard]] IncidentType getType() const;
+    [[nodiscard]] const std::string& getDescription() const;
+    [[nodiscard]] int getImpactMinutes() const;
+    [[nodiscard]] std::string getTypeString() const;
 
-    void setImpactMinute(int minute);
-    void setDescriere(const std::string& desc);
+    void setImpactMinutes(int minutes);
+    void setDescription(const std::string& desc);
 
     bool operator==(const Incident& other) const;
     bool operator<(const Incident& other) const;

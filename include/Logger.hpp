@@ -2,8 +2,8 @@
 #define LOGGER_HPP
 
 #include <iostream>
-#include <vector>
 #include <string>
+#include <vector>
 
 enum class LogLevel { INFO, WARNING, ERROR };
 
@@ -17,24 +17,24 @@ public:
     Logger(const Logger&) = delete;
     Logger& operator=(const Logger&) = delete;
 
-    void log(LogLevel level, const std::string& mesaj) {
+    void log(LogLevel level, const std::string& message) {
         std::string prefix;
         switch (level) {
             case LogLevel::INFO: prefix = "[INFO] "; break;
             case LogLevel::WARNING: prefix = "[WARN] "; break;
-            case LogLevel::ERROR: prefix = "[ERR ] "; break;
+            case LogLevel::ERROR: prefix = "[ERROR] "; break;
         }
-        loguri.push_back(prefix + mesaj);
-        std::cout << prefix << mesaj << std::endl;
+        logs.push_back(prefix + message);
+        std::cout << prefix << message << "\n";
     }
 
-    void afiseazaLoguri() const;
-    void salveazaInFisier(const std::string& numeFisier) const;
+    void showLogs() const;
+    void saveToFile(const std::string& fileName) const;
 
 private:
     Logger() = default;
     ~Logger() = default;
-    std::vector<std::string> loguri;
+    std::vector<std::string> logs;
 };
 
 #endif

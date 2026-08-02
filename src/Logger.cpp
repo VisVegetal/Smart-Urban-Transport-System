@@ -1,26 +1,27 @@
 #include "../include/Logger.hpp"
+
 #include <fstream>
 #include <iostream>
 
-void Logger::afiseazaLoguri() const {
-    if (loguri.empty()) {
-        std::cout << "Nu exista loguri inregistrate.\n";
+void Logger::showLogs() const {
+    if (logs.empty()) {
+        std::cout << "No logs recorded.\n";
         return;
     }
-    for (const auto& l : loguri) {
+    for (const auto& l : logs) {
         std::cout << l << "\n";
     }
 }
 
-void Logger::salveazaInFisier(const std::string& numeFisier) const {
-    std::ofstream fout(numeFisier);
+void Logger::saveToFile(const std::string& fileName) const {
+    std::ofstream fout(fileName);
     if (!fout) {
-        std::cerr << "Eroare la deschiderea fisierului de loguri: " << numeFisier << "\n";
+        std::cerr << "Error opening log file: " << fileName << "\n";
         return;
     }
-    for (const auto& l : loguri) {
+    for (const auto& l : logs) {
         fout << l << "\n";
     }
     fout.close();
-    std::cout << "Logurile au fost salvate cu succes in: " << numeFisier << "\n";
+    std::cout << "Logs saved successfully to: " << fileName << "\n";
 }

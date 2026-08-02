@@ -1,29 +1,29 @@
 #ifndef TICKETING_HPP
 #define TICKETING_HPP
 
-#include <vector>
 #include <memory>
-#include "Bilet.hpp"
+#include <vector>
 
-class SistemTicketing {
+#include "Ticket.hpp"
+
+class TicketingSystem {
 private:
-    std::vector<std::unique_ptr<Bilet>> bileteVandute;
-    double venitTotal;
-    int contorSerie;
+    std::vector<std::unique_ptr<Ticket>> soldTickets;
+    int serialCounter;
 
 public:
-    SistemTicketing();
-    ~SistemTicketing() = default;
-    SistemTicketing(const SistemTicketing& other);
-    SistemTicketing& operator=(const SistemTicketing& other);
+    TicketingSystem();
+    ~TicketingSystem() = default;
+    TicketingSystem(const TicketingSystem& other);
+    TicketingSystem& operator=(const TicketingSystem& other);
 
-    void emiteBiletIntreg(double pret);
-    void emiteBiletRedus(double pret, double reducere);
-    
-    [[nodiscard]] double calculeazaVenituri() const;
-    void afiseazaIstoric() const;
-    void anuleazaUltimulBilet();
-    void curataIstoric();
+    void issueFullTicket(double price);
+    void issueReducedTicket(double price, double discount);
+
+    [[nodiscard]] double calculateRevenue() const;
+    void showHistory() const;
+    void cancelLastTicket();
+    void clearHistory();
 };
 
 #endif

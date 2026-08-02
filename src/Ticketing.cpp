@@ -1,62 +1,61 @@
 #include "../include/Ticketing.hpp"
+
 #include <iostream>
 
-SistemTicketing::SistemTicketing() : venitTotal(0.0), contorSerie(1000) {}
+TicketingSystem::TicketingSystem() : serialCounter(1000) {}
 
-SistemTicketing::SistemTicketing(const SistemTicketing& other) {
-    this->venitTotal = other.venitTotal;
-    this->contorSerie = other.contorSerie;
-    this->bileteVandute.clear();
-    for (const auto& b : other.bileteVandute) {
-        if (b) {
-            this->bileteVandute.push_back(std::unique_ptr<Bilet>(b->clone()));
+TicketingSystem::TicketingSystem(const TicketingSystem& other) {
+    this->serialCounter = other.serialCounter;
+    this->soldTickets.clear();
+    for (const auto& t : other.soldTickets) {
+        if (t) {
+            this->soldTickets.push_back(t->clone());
         }
     }
 }
 
-SistemTicketing& SistemTicketing::operator=(const SistemTicketing& other) {
+TicketingSystem& TicketingSystem::operator=(const TicketingSystem& other) {
     if (this != &other) {
-        this->venitTotal = other.venitTotal;
-        this->contorSerie = other.contorSerie;
-        this->bileteVandute.clear();
-        for (const auto& b : other.bileteVandute) {
-            if (b) {
-                this->bileteVandute.push_back(std::unique_ptr<Bilet>(b->clone()));
+        this->serialCounter = other.serialCounter;
+        this->soldTickets.clear();
+        for (const auto& t : other.soldTickets) {
+            if (t) {
+                this->soldTickets.push_back(t->clone());
             }
         }
     }
     return *this;
 }
 
-void SistemTicketing::emiteBiletIntreg(double pret) {
-    std::string serie = "INT-" + std::to_string(++contorSerie);
-    bileteVandute.push_back(std::make_unique<BiletIntreg>(pret, serie));
+void TicketingSystem::issueFullTicket(double price) {
+    std::string serial = "FULL-" + std::to_string(++serialCounter);
+    soldTickets.push_back(std::make_unique<FullTicket>(price, serial));
 }
 
-void SistemTicketing::emiteBiletRedus(double pret, double reducere) {
-    std::string serie = "RED-" + std::to_string(++contorSerie);
-    bileteVandute.push_back(std::make_unique<BiletRedus>(pret, serie, reducere));
+void TicketingSystem::issueReducedTicket(double price, double discount) {
+    std::string serial = "RED-" + std::to_string(++serialCounter);
+    soldTickets.push_back(std::make_unique<ReducedTicket>(price, serial, discount));
 }
 
-double SistemTicketing::calculeazaVenituri() const {
+double TicketingSystem::calculateRevenue() const {
     double total = 0;
-    for (const auto& b : bileteVandute) {
-        total += b->getPretFinal();
+    for (const auto& t : soldTickets) {
+        total += t->getFinalPrice();
     }
     return total;
 }
 
-void SistemTicketing::afiseazaIstoric() const {
-    std::cout << "--- ISTORIC VANZARI BILETE ---\n";
-    for (const auto& b : bileteVandute) {
-        std::cout << b->getDetalii() << " | Pret: " << b->getPretFinal() << " RON\n";
+void TicketingSystem::showHistory() const {
+    std::cout << "--- TICKET SALES HISTORY ---\n";
+    for (const auto& t : soldTickets) {
+        std::cout << t->getDetails() << " | Price: " << t->getFinalPrice() << " RON\n";
     }
 }
 
-void SistemTicketing::anuleazaUltimulBilet() {
-    if (!bileteVandute.empty()) bileteVandute.pop_back();
+void TicketingSystem::cancelLastTicket() {
+    if (!soldTickets.empty()) soldTickets.pop_back();
 }
 
-void SistemTicketing::curataIstoric() {
-    bileteVandute.clear();
+void TicketingSystem::clearHistory() {
+    soldTickets.clear();
 }
