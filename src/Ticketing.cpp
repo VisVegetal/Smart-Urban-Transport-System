@@ -1,7 +1,5 @@
 #include "../include/Ticketing.hpp"
 
-#include <iostream>
-
 TicketingSystem::TicketingSystem() : serialCounter(1000) {}
 
 TicketingSystem::TicketingSystem(const TicketingSystem& other) {
@@ -43,19 +41,4 @@ double TicketingSystem::calculateRevenue() const {
         total += t->getFinalPrice();
     }
     return total;
-}
-
-void TicketingSystem::showHistory() const {
-    std::cout << "--- TICKET SALES HISTORY ---\n";
-    for (const auto& t : soldTickets) {
-        std::cout << t->getDetails() << " | Price: " << t->getFinalPrice() << " RON\n";
-    }
-}
-
-void TicketingSystem::cancelLastTicket() {
-    if (!soldTickets.empty()) soldTickets.pop_back();
-}
-
-void TicketingSystem::clearHistory() {
-    soldTickets.clear();
 }

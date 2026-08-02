@@ -21,9 +21,6 @@ public:
     void issueReducedTicket(double price, double discount);
 
     [[nodiscard]] double calculateRevenue() const;
-    void showHistory() const;
-    void cancelLastTicket();
-    void clearHistory();
 };
 
 #endif

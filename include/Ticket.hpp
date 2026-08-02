@@ -17,8 +17,6 @@ public:
     [[nodiscard]] virtual std::unique_ptr<Ticket> clone() const = 0;
 
     [[nodiscard]] virtual double getFinalPrice() const = 0;
-    [[nodiscard]] virtual std::string getDetails() const;
-    [[nodiscard]] const std::string& getSerial() const;
 };
 
 class FullTicket : public Ticket {

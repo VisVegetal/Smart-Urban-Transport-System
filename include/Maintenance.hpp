@@ -26,9 +26,7 @@ public:
 
     [[nodiscard]] bool canRun(int id) const;
     [[nodiscard]] std::string getStatusDetails(int id) const;
-    [[nodiscard]] int getKilometers(int id) const;
 
-    void addTechnicalNote(int id, const std::string& note);
     void generateTechnicalReport() const;
 };
 

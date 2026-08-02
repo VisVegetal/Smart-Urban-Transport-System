@@ -32,9 +32,6 @@ public:
     [[nodiscard]] int getImpactMinutes() const;
     [[nodiscard]] std::string getTypeString() const;
 
-    void setImpactMinutes(int minutes);
-    void setDescription(const std::string& desc);
-
     bool operator==(const Incident& other) const;
     bool operator<(const Incident& other) const;
 

@@ -78,22 +78,6 @@ void Dispatcher::showVehicles() const {
     });
 }
 
-void Dispatcher::sortVehiclesByCapacity() {
-    std::ranges::sort(vehicles, [](const std::unique_ptr<Vehicle>& a,
-                                   const std::unique_ptr<Vehicle>& b) {
-        return a->getCapacity() > b->getCapacity();
-    });
-}
-
-void Dispatcher::filterVehiclesByType(const std::string& type) const {
-    std::cout << "--- Filter by type: " << type << " ---\n";
-    for (const auto& vehicle : vehicles) {
-        if (vehicle->getType() == type) {
-            std::cout << vehicle->describe() << "\n";
-        }
-    }
-}
-
 void Dispatcher::addRoute(const Route& route) {
     if (hasRoute(route.getName())) {
         throw RouteException("Route already exists.");
@@ -203,6 +187,5 @@ void Dispatcher::generateActivityReport() const {
 }
 
 Maintenance& Dispatcher::getMaintenance() { return maintenance; }
-TicketingSystem& Dispatcher::getTicketingSystem() { return ticketingSystem; }
 const std::vector<Route>& Dispatcher::getRoutes() const { return routes; }
 const std::vector<Incident>& Dispatcher::getIncidents() const { return incidents; }

@@ -11,8 +11,6 @@ public:
     static void loadSystem(Dispatcher& d, const std::string& fileName);
 
     static bool isFileValid(const std::string& fileName);
-
-    static void createBackup(const std::string& source, const std::string& destination);
 };
 
 #endif

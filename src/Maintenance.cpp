@@ -56,11 +56,3 @@ void Maintenance::generateTechnicalReport() const {
     std::cout << "============================================\n";
 }
 
-void Maintenance::addTechnicalNote(int id, const std::string& note) {
-    serviceHistory[id].push_back("Note: " + note);
-}
-
-int Maintenance::getKilometers(int id) const {
-    if (kilometersDriven.contains(id)) return kilometersDriven.at(id);
-    return 0;
-}

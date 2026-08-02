@@ -33,8 +33,6 @@ public:
     [[nodiscard]] bool hasVehicle(int id) const;
     void removeVehicle(int id);
     void showVehicles() const;
-    void sortVehiclesByCapacity();
-    void filterVehiclesByType(const std::string& type) const;
 
     void addRoute(const Route& route);
     void showRoutes() const;
@@ -55,7 +53,6 @@ public:
     void generateActivityReport() const;
 
     Maintenance& getMaintenance();
-    TicketingSystem& getTicketingSystem();
 
     // Read-only, type-erased view of the fleet
     [[nodiscard]] auto getVehicles() const {
@@ -66,17 +63,6 @@ public:
     }
     [[nodiscard]] const std::vector<Route>& getRoutes() const;
     [[nodiscard]] const std::vector<Incident>& getIncidents() const;
-
-    template <typename T>
-    [[nodiscard]] int countVehiclesOfType() const {
-        int count = 0;
-        for (const auto& vehicle : vehicles) {
-            if (dynamic_cast<const T*>(vehicle.get())) {
-                ++count;
-            }
-        }
-        return count;
-    }
 };
 
 #endif

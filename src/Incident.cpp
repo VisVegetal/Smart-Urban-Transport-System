@@ -33,14 +33,6 @@ std::string Incident::getTypeString() const {
     }
 }
 
-void Incident::setImpactMinutes(int minutes) {
-    if (minutes >= 0) this->impactMinutes = minutes;
-}
-
-void Incident::setDescription(const std::string& desc) {
-    if (!desc.empty()) this->description = desc;
-}
-
 bool Incident::operator==(const Incident& other) const {
     return this->type == other.type &&
            this->impactMinutes == other.impactMinutes &&

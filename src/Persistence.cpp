@@ -69,14 +69,3 @@ bool Persistence::isFileValid(const std::string& fileName) {
 
     return (firstLine == "VEHICLES_START");
 }
-
-void Persistence::createBackup(const std::string& source, const std::string& destination) {
-    std::ifstream src(source, std::ios::binary);
-    std::ofstream dst(destination, std::ios::binary);
-
-    if (src.is_open() && dst.is_open()) {
-        dst << src.rdbuf();
-    }
-    src.close();
-    dst.close();
-}
